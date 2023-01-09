@@ -6,7 +6,7 @@ interface LayoutProps {
 }
 
 const Layout: NextPage<LayoutProps> = ({ children }) => {
-  return <main className="max-w-2xl mx-auto">{children}</main>;
+  return <main className="max-w-2xl mx-auto px-4">{children}</main>;
 };
 
 export default Layout;
