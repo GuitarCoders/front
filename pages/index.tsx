@@ -4,14 +4,14 @@ import PostPreview from "../components/postPreview";
 
 export default function Home() {
   return (
-    <Layout>
-      <section className="py-2 mb-12">
+    <Layout title="모아보는">
+      <section className="mt-8 space-y-8">
         <PostForm />
-      </section>
-      <section className="space-y-4">
-        {Array.from({ length: 10 }, (_, i) => i).map((i) => (
-          <PostPreview key={i} />
-        ))}
+        <section className="space-y-4">
+          {Array.from({ length: 10 }, (_, i) => i).map((i) => (
+            <PostPreview key={i} />
+          ))}
+        </section>
       </section>
     </Layout>
   );
