@@ -1,6 +1,6 @@
 const PostPreview = () => {
   return (
-    <div className="w-full border rounded-md p-4 flex flex-col">
+    <div className="w-full p-4 flex flex-col">
       <div className="flex gap-4">
         <div className="w-16 h-16 rounded-full bg-slate-200 shrink-0" />
         <div>
