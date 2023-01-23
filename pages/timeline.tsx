@@ -1,6 +1,6 @@
 import FIB from "../components/fib";
 import Layout from "../components/layout";
-import PostPreview from "../components/postPreview";
+import PostPreview from "../components/post-preview";
 import { PlusIcon } from "../styles/icons";
 
 export default function Timeline() {
