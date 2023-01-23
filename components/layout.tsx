@@ -16,7 +16,7 @@ interface LayoutProps {
 const Layout: NextPage<LayoutProps> = ({ title, children }) => {
   return (
     <main className="max-w-2xl mx-auto">
-      <header className="h-16 border-b text-center shadow-sm flex justify-center items-center fixed top-0 max-w-2xl w-full bg-white">
+      <header className="h-16 border-b text-center shadow-sm flex justify-center items-center fixed top-0 max-w-2xl w-full bg-white z-10">
         <h1 className="text-lg font-bold">{title}</h1>
       </header>
       <section className="mt-16 mb-20">{children}</section>
