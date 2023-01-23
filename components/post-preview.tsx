@@ -1,13 +1,9 @@
+import Profile from "./profile";
+
 const PostPreview = () => {
   return (
     <div className="w-full p-4 flex flex-col gap-3">
-      <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-slate-200 shrink-0" />
-        <div className="flex flex-col">
-          <h2 className="font-semibold">민나노아이도루</h2>
-          <p className="text-slate-500 text-sm">@idoldaze</p>
-        </div>
-      </div>
+      <Profile />
       <p>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae aliquam
         soluta quas reiciendis saepe corporis dolorem veritatis architecto
