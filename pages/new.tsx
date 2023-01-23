@@ -3,7 +3,7 @@ import { PlusIcon } from "../styles/icons";
 
 const New = () => {
   return (
-    <Layout hideLayouts>
+    <Layout canGoBack>
       <section className="p-4">
         <form className="flex flex-col gap-3">
           <textarea
