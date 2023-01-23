@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import FIB from "../components/fib";
-import Layout from "../components/layout";
-import PostPreview from "../components/post-preview";
-import { PlusIcon } from "../styles/icons";
+import FIB from "../../components/fib";
+import Layout from "../../components/layout";
+import PostPreview from "../../components/post-preview";
+import { PlusIcon } from "../../styles/icons";
 
 export default function Timeline() {
   const { push } = useRouter();
