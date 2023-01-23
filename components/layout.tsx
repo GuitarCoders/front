@@ -6,7 +6,7 @@ import {
   UserIcon,
   UsersIcon,
 } from "../styles/icons";
-import FooterItem from "./footerItem";
+import FooterItem from "./footer-item";
 
 interface LayoutProps {
   title?: string;
@@ -16,10 +16,10 @@ interface LayoutProps {
 const Layout: NextPage<LayoutProps> = ({ title, children }) => {
   return (
     <main className="max-w-2xl mx-auto">
-      <header className="h-16 border-b text-center shadow-sm flex justify-center items-center">
+      <header className="h-16 border-b text-center shadow-sm flex justify-center items-center fixed top-0 max-w-2xl w-full bg-white">
         <h1 className="text-lg font-bold">{title}</h1>
       </header>
-      <section className="mb-20">{children}</section>
+      <section className="mt-16 mb-20">{children}</section>
       <footer className="max-w-2xl w-full grid grid-cols-4 mx-auto h-20 bg-white fixed bottom-0 border-t">
         <FooterItem
           title="모아보는"
