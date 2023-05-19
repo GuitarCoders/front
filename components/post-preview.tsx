@@ -3,7 +3,7 @@ import Profile from "./profile";
 
 const PostPreview = () => {
   return (
-    <Link href="/timeline/1">
+    <Link href="/posts/1">
       <div className="w-full p-4 text-left flex flex-col gap-3 hover:bg-gray-50 transition-colors">
         <Profile />
         <p>
