@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
-import FIB from "../components/fib";
 import Layout from "../components/layout";
 import PostPreview from "../components/post-preview";
-import { PlusIcon } from "../styles/icons";
 
 export default function Timeline() {
   const { push } = useRouter();
@@ -15,7 +13,6 @@ export default function Timeline() {
           <PostPreview key={i} />
         ))}
       </section>
-      <FIB icon={<PlusIcon className="w-8 h-8" />} onClick={pushToNewPage} />
     </Layout>
   );
 }
