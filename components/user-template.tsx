@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import PostPreview from "./post-preview";
+import Link from "next/link";
 
 interface UserTemplateProps {
   isMe?: boolean;
@@ -56,7 +57,10 @@ const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
               </>
             ) : null}
             {isMe || isFriend ? null : (
-              <button className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1">
+              <Link
+                href="/friends/minna_idol"
+                className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -72,7 +76,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
                   />
                 </svg>
                 친구 신청
-              </button>
+              </Link>
             )}
           </div>
           <div className="w-12 h-12 bg-slate-300 rounded-md" />
