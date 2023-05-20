@@ -1,15 +1,13 @@
 import Layout from "@components/layout";
+import SubmitButton from "@components/submit-button";
+import Textarea from "@components/textarea";
 
 const NewPost = () => {
   return (
     <Layout canGoBack>
       <section className="p-4">
         <form className="flex flex-col gap-3">
-          <textarea
-            className="border w-full resize-none rounded-md p-4 focus:ring-violet-400 focus:outline-violet-400"
-            placeholder="무슨 일이 일어나고 있나요?"
-            rows={3}
-          />
+          <Textarea placeholder="무슨 일이 일어나고 있나요?" />
           <div>
             <label
               htmlFor="media"
@@ -32,9 +30,7 @@ const NewPost = () => {
             </label>
             <input type="file" className="hidden" id="media" />
           </div>
-          <button className="px-4 py-2 bg-violet-400 text-white rounded-md">
-            글쓰기
-          </button>
+          <SubmitButton text="글쓰기" />
         </form>
       </section>
     </Layout>
