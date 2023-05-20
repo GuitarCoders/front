@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import Layout from "../components/layout";
 import PostPreview from "../components/post-preview";
-import Profile from "../components/profile";
 
 const User: NextPage = () => {
   return (
@@ -49,7 +48,10 @@ const User: NextPage = () => {
               설정
             </button>
           </div>
-          <Profile />
+          <div className="flex flex-col gap-3">
+            <div className="w-12 h-12 bg-slate-300 rounded-md" />
+            <p className="font-medium">민나노아이도루</p>
+          </div>
           <p className="text-xs text-slate-600">
             Lorem ipsum dolor sit amet consectetur adipisicing.
           </p>
