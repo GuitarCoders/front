@@ -3,8 +3,8 @@ import Link from "next/link";
 const PostPreview = () => {
   return (
     <Link href="/posts/1">
-      <div className="w-full p-4 text-left flex flex-col gap-3 hover:bg-gray-50 transition-colors">
-        {/* Profiles */}
+      <div className="w-full p-4 text-left flex flex-col gap-3">
+        {/* 프로필 */}
         <section className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-slate-300 shrink-0 rounded-md" />
@@ -14,6 +14,8 @@ const PostPreview = () => {
           </div>
           <p className="text-sm text-gray-400">1분 전</p>
         </section>
+
+        {/* 본문 & 태그 */}
         <p className="text-sm">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae aliquam
           soluta quas reiciendis saepe corporis dolorem veritatis architecto
@@ -25,6 +27,8 @@ const PostPreview = () => {
           voluptatum vitae cupiditate. Iste delectus autem ex maxime doloremque
           voluptatum recusandae?
         </p>
+
+        {/* 버튼부 */}
         <div className="flex gap-2 self-end mt-4 text-slate-600">
           <button className="flex items-center gap-1 border py-1 px-2 rounded-md">
             <svg
