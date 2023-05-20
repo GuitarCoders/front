@@ -23,7 +23,7 @@ const FooterItem = ({ title, link }: FooterItemProps) => {
           : "text-zinc-300"
       )}
     >
-      <div className="flex flex-col items-center gap-2 absolute bottom-2 left-0 right-0">
+      <div className="flex flex-col items-center gap-2 absolute bottom-6 left-0 right-0">
         {active ? icons[link].active : icons[link].inactive}
         <p className="text-xs">{title}</p>
       </div>

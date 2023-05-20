@@ -105,11 +105,11 @@ const Layout: NextPage<LayoutProps> = ({
           </button>
         </section>
       </header>
-      <section className={cls("mt-14", canGoBack ? "" : "mb-16")}>
+      <section className={cls("mt-14", canGoBack ? "" : "mb-20")}>
         {children}
       </section>
       {canGoBack ? null : (
-        <footer className="max-w-2xl w-full grid grid-cols-4 mx-auto h-16 bg-violet-600 fixed bottom-0 border-t-2 border-violet-800">
+        <footer className="max-w-2xl w-full grid grid-cols-4 mx-auto h-20 bg-violet-600 fixed bottom-0 border-t-2 border-violet-800">
           <FooterItem title="모아보는" link="/" />
           <FooterItem title="메시지" link="/chat" />
           <FooterItem title="나는" link="/user" />
