@@ -4,6 +4,8 @@ import { useLazyQuery, gql } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import TextInput from "@components/text-input";
 
 interface LoginForm {
   username: string;
@@ -42,8 +44,10 @@ const SignIn = () => {
   const router = useRouter();
   const { register, handleSubmit } = useForm<LoginForm>();
 
-  const [getLogin, { loading, error, data }] =
-    useLazyQuery<LoginResponse>(GET_LOGIN);
+  const [getLogin, { loading, error, data }] = useLazyQuery<
+    LoginResponse,
+    LoginForm
+  >(GET_LOGIN);
   const onValid = async (formData: LoginForm) => {
     if (loading) return;
     await getLogin({ variables: formData });
@@ -73,36 +77,33 @@ const SignIn = () => {
           <b className="text-violet-600">나</b>도
           <br />
           <b className="text-violet-600">하</b>루
+          <br />
+          로그인
         </h1>
       </section>
       <form
         onSubmit={handleSubmit(onValid)}
         className="flex flex-col gap-4 p-8"
       >
-        <input
-          type="text"
-          placeholder="유저명"
-          autoComplete="off"
-          autoSave="off"
-          disabled={loading}
-          className="appearance-none w-full border border-gray-300 rounded-md shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 px-4 py-2"
-          {...register("username")}
+        <TextInput
+          register={register("username")}
+          placeholder="아이디"
+          loading={loading}
         />
-        <input
+        <TextInput
           type="password"
+          register={register("password")}
           placeholder="비밀번호"
-          autoComplete="off"
-          autoSave="off"
-          disabled={loading}
-          className="appearance-none w-full border border-gray-300 rounded-md shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-violet-600 focus:border-violet-600 px-4 py-2"
-          {...register("password")}
+          loading={loading}
         />
         <SubmitButton text="로그인" loading={loading} />
       </form>
       <div className="px-8 pb-8 flex justify-center">
         <p className="text-sm text-gray-500">
           아직 나도하루 계정이 없나요?{" "}
-          <span className="underline text-violet-600">회원가입 하기</span>
+          <Link href="/auth/signup" className="underline text-violet-600">
+            회원가입 하기
+          </Link>
         </p>
       </div>
       <div className="flex gap-8 pt-8 justify-center">
