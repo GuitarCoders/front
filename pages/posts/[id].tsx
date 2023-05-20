@@ -1,3 +1,5 @@
+import ChatInput from "@components/chat-input";
+import Comment from "@components/comment";
 import Layout from "@components/layout";
 
 const PostDetail = () => {
@@ -7,19 +9,9 @@ const PostDetail = () => {
   };
   return (
     <Layout canGoBack profile={profile}>
-      <div className="fixed bottom-0 p-4 w-full max-w-2xl mx-auto">
-        <form className="relative">
-          <input
-            type="text"
-            className="w-full border pl-4 pr-14 py-2 rounded-3xl focus:ring-2 ring-violet-400 focus:outline-none"
-          />
-          <button className="absolute right-2 top-[5px] text-md py-1 px-4 bg-violet-400 rounded-3xl text-white">
-            →
-          </button>
-        </form>
-      </div>
       <section className="divide-y pb-16">
-        <div className="flex flex-col p-4 gap-2 text-sm">
+        {/* 본문 */}
+        <div className="flex flex-col p-4 gap-2 text-sm shadow-md">
           <h5 className="">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
             omnis culpa eos minus voluptatem, tempora beatae nemo, ab
@@ -74,48 +66,56 @@ const PostDetail = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-
                 <p>3</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* <PostPreview /> */}
+        {/* 나도 */}
         <div>
-          <h2 className="p-4 border-b font-semibold">댓글 (3)</h2>
-          <div className="divide-y">
-            <div className="p-4 flex gap-4 align-start">
-              <div className="w-10 h-10 rounded-full bg-slate-400 flex-shrink-0" />
-              <p className="text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
-                beatae quos vero itaque enim dolores cupiditate et expedita hic,
-                quaerat dolore ea. Tempora ducimus provident iure explicabo
-                cumque ea iste, aliquid facilis ullam ipsam odio, nam, ad
-                inventore. Sit, veniam cumque est veritatis quis, commodi
-                recusandae iure nobis nostrum, fuga laborum odio modi eum
-                expedita doloribus culpa. Velit, enim cum.
-              </p>
-            </div>
-            <div className="p-4 flex gap-4 align-start">
-              <div className="w-10 h-10 rounded-full bg-slate-400 flex-shrink-0" />
-              <p className="text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo,
-                sint.
-              </p>
-            </div>
-            <div className="p-4 flex gap-4 align-start">
-              <div className="w-10 h-10 rounded-full bg-slate-400 flex-shrink-0" />
-              <p className="text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Corrupti quae, neque molestiae voluptatibus vel iure sed ex
-                animi non ut assumenda amet mollitia earum omnis totam commodi
-                ducimus nisi fuga!
-              </p>
-            </div>
+          <div className="flex gap-4 px-4 h-16 items-center border-b">
+            <button className="flex items-center gap-1 border shadow-sm rounded-md px-3 py-2 text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+              나도
+            </button>
+            <p className="text-sm text-gray-400">이 글에 공감한다면 나도!</p>
+          </div>
+
+          {/* 댓글 */}
+          <div>
+            <Comment
+              username="냠냠"
+              comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
+                  beatae quos vero itaque enim dolores cupiditate et expedita
+                  hic, quaerat dolore ea. Tempora ducimus provident iure
+                  explicabo cumque ea iste, aliquid facilis ullam ipsam odio,
+                  nam, ad inventore. Sit, veniam cumque est veritatis quis,
+                  commodi recusandae iure nobis nostrum, fuga laborum odio modi
+                  eum expedita doloribus culpa. Velit, enim cum."
+            />
+            <Comment
+              username="프로필네임"
+              comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit fuga cumque pariatur eos, aliquam quidem sit omnis earum suscipit ipsum."
+            />
           </div>
         </div>
       </section>
+
+      <ChatInput placeholder="댓글 입력.." />
     </Layout>
   );
 };
