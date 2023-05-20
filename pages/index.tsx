@@ -7,7 +7,7 @@ export default function Timeline() {
   const pushToNewPage = () => push("/new");
 
   return (
-    <Layout title="모아보는">
+    <Layout title="모아보는" showNewPostBtn>
       <section className="divide-y">
         {Array.from({ length: 10 }, (_, i) => i).map((i) => (
           <PostPreview key={i} />

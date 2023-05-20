@@ -4,7 +4,7 @@ import PostPreview from "@components/post-preview";
 
 const User: NextPage = () => {
   return (
-    <Layout title="나는">
+    <Layout title="나는" showNewPostBtn>
       <section>
         <div className="h-56 bg-slate-100 flex flex-col justify-end p-4 gap-3 relative">
           <div className="absolute right-4 top-4 flex gap-2">
@@ -56,9 +56,9 @@ const User: NextPage = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing.
           </p>
         </div>
-        <div className="grid grid-cols-4 h-12 border-b">
+        <div className="grid grid-cols-3 h-12 border-b">
           <button className="text-violet-400 font-bold">이야기</button>
-          {["미디어", "글감", "미투함"].map((i) => (
+          {["미디어", "미투함"].map((i) => (
             <button key={i}>{i}</button>
           ))}
         </div>
