@@ -1,6 +1,6 @@
 import Layout from "@components/layout";
 
-const New = () => {
+const NewPost = () => {
   return (
     <Layout canGoBack>
       <section className="p-4">
@@ -41,4 +41,4 @@ const New = () => {
   );
 };
 
-export default New;
+export default NewPost;
