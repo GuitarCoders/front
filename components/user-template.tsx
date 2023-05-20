@@ -55,7 +55,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
                 </button>
               </>
             ) : null}
-            {isFriend ? null : (
+            {isMe || isFriend ? null : (
               <button className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
