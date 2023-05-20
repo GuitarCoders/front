@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import Layout from "../components/layout";
-import PostPreview from "../components/post-preview";
+import Layout from "@components/layout";
+import PostPreview from "@components/post-preview";
 
 const User: NextPage = () => {
   return (

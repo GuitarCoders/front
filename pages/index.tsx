@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import Layout from "../components/layout";
-import PostPreview from "../components/post-preview";
+import Layout from "@components/layout";
+import PostPreview from "@components/post-preview";
 
 export default function Timeline() {
   const { push } = useRouter();

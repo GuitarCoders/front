@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
-import { cls } from "../utils/cls";
+import { cls } from "@libs/cls";
 
 type Link = "/" | "/chat" | "/user" | "/friends";
 
