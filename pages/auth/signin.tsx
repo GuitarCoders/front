@@ -4,7 +4,7 @@ const Enter = () => {
       <div className="mt-12 h-28 flex justify-center items-center text-xl font-bold">
         로그인
       </div>
-      <form className="py-4">
+      <form>
         <div className="p-4 flex flex-col gap-2">
           <label htmlFor="id">ID</label>
           <input
