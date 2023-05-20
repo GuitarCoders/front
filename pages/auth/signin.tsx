@@ -1,8 +1,6 @@
-import Layout from "../components/layout";
-
 const Enter = () => {
   return (
-    <Layout>
+    <main className="px-4">
       <div className="mt-12 h-28 flex justify-center items-center text-xl font-bold">
         로그인
       </div>
@@ -31,7 +29,7 @@ const Enter = () => {
           </button>
         </div>
       </form>
-    </Layout>
+    </main>
   );
 };
 
