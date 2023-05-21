@@ -57,7 +57,7 @@ const SignIn = () => {
   const [LoginFailure] = useAlertDialog({
     title: "로그인 실패 😭",
     description: "일치하는 회원 정보를 찾지 못했어요.",
-    error,
+    error: !!error,
   });
 
   // 로그인 페이지에 진입 했을 때, token이 이미 있어도 삭제 시킴.

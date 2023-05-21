@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 interface UseAlertDialogProps {
   title: string;
   description: string;
-  error?: any;
+  error?: boolean;
   buttonFn?: () => void;
   buttonText?: string;
 }
