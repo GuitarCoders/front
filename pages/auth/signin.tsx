@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import TextInput from "@components/text-input";
+import useAlertDialog from "@libs/useAlertDialog";
 
 interface LoginForm {
   username: string;
@@ -53,6 +54,12 @@ const SignIn = () => {
     await getLogin({ variables: formData });
   };
 
+  const [LoginFailure] = useAlertDialog({
+    title: "로그인 실패 😭",
+    description: "일치하는 회원 정보를 찾지 못했어요.",
+    error,
+  });
+
   // 로그인 페이지에 진입 했을 때, token이 이미 있어도 삭제 시킴.
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -69,49 +76,51 @@ const SignIn = () => {
     }
   }, [data, router]);
 
-  if (error) alert(JSON.stringify(error));
   return (
-    <main className="max-w-2xl mx-auto">
-      <section className="flex p-8 my-10">
-        <h1 className="text-4xl font-bold leading-snug">
-          <b className="text-violet-600">나</b>도
-          <br />
-          <b className="text-violet-600">하</b>루
-          <br />
-          로그인
-        </h1>
-      </section>
-      <form
-        onSubmit={handleSubmit(onValid)}
-        className="flex flex-col gap-4 p-8"
-      >
-        <TextInput
-          register={register("username")}
-          placeholder="아이디"
-          loading={loading}
-        />
-        <TextInput
-          type="password"
-          register={register("password")}
-          placeholder="비밀번호"
-          loading={loading}
-        />
-        <SubmitButton text="로그인" loading={loading} />
-      </form>
-      <div className="px-8 pb-8 flex justify-center">
-        <p className="text-sm text-gray-500">
-          아직 나도하루 계정이 없나요?{" "}
-          <Link href="/auth/signup" className="underline text-violet-600">
-            회원가입 하기
-          </Link>
-        </p>
-      </div>
-      <div className="flex gap-8 pt-8 justify-center">
-        <ExternalLoginButton icon="apple" />
-        <ExternalLoginButton icon="kakao" />
-        <ExternalLoginButton icon="github" />
-      </div>
-    </main>
+    <>
+      <LoginFailure />
+      <main className="max-w-2xl mx-auto">
+        <section className="flex p-8 my-10">
+          <h1 className="text-4xl font-bold leading-snug">
+            <b className="text-violet-600">나</b>도
+            <br />
+            <b className="text-violet-600">하</b>루
+            <br />
+            로그인
+          </h1>
+        </section>
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="flex flex-col gap-4 p-8"
+        >
+          <TextInput
+            register={register("username")}
+            placeholder="아이디"
+            loading={loading}
+          />
+          <TextInput
+            type="password"
+            register={register("password")}
+            placeholder="비밀번호"
+            loading={loading}
+          />
+          <SubmitButton text="로그인" loading={loading} />
+        </form>
+        <div className="px-8 pb-8 flex justify-center">
+          <p className="text-sm text-gray-500">
+            아직 나도하루 계정이 없나요?{" "}
+            <Link href="/auth/signup" className="underline text-violet-600">
+              회원가입 하기
+            </Link>
+          </p>
+        </div>
+        <div className="flex gap-8 pt-8 justify-center">
+          <ExternalLoginButton icon="apple" />
+          <ExternalLoginButton icon="kakao" />
+          <ExternalLoginButton icon="github" />
+        </div>
+      </main>
+    </>
   );
 };
 
