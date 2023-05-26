@@ -53,7 +53,7 @@ const SignUp = () => {
   const router = useRouter();
   const { register, handleSubmit } = useForm<SignUpForm>();
 
-  const [getSignUp, { loading, error, data }] = useMutation<
+  const [getSignUp, { loading, error }] = useMutation<
     SignUpResponse,
     SignUpForm
   >(SIGN_UP);
