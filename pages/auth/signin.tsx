@@ -62,16 +62,22 @@ const SignIn = () => {
 
   // 로그인 페이지에 진입 했을 때, token이 이미 있어도 삭제 시킴.
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      localStorage.clear();
-    }
-  }, [router]);
+    localStorage.clear();
+  }, []);
 
   // 로그인 시도 성공 시, 토큰 저장 시켜서 메인 페이지로 보냄
   useEffect(() => {
     if (data && data.login.status) {
       const token = data.login.jwt_token;
+      const user = {
+        _id: data.login._id,
+        name: data.login.name,
+        email: data.login.email,
+        account_id: data.login.account_id,
+        about_me: data.login.about_me,
+      };
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
       router.push("/");
     }
   }, [data, router]);
