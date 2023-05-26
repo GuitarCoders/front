@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 interface UseAlertDialogProps {
   title: string;
   description: string;
+  canGoBack?: boolean;
+  canClose?: boolean;
   error?: boolean;
   buttonFn?: () => void;
   buttonText?: string;
@@ -19,6 +21,7 @@ export default function useAlertDialog({
   title,
   description,
   error,
+  canClose = true,
   buttonFn,
   buttonText,
 }: UseAlertDialogProps): UseAlertDialogResult {
@@ -38,6 +41,7 @@ export default function useAlertDialog({
       description={description}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
+      canClose={canClose}
     />
   );
 

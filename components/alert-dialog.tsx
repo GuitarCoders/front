@@ -6,6 +6,7 @@ interface AlertDialogComponentProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   description: string;
+  canClose: boolean;
 }
 
 const AlertDialogComponent: NextPage<AlertDialogComponentProps> = ({
@@ -13,12 +14,13 @@ const AlertDialogComponent: NextPage<AlertDialogComponentProps> = ({
   setIsOpen,
   title,
   description,
+  canClose,
 }) => {
   return (
     <AlertDialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="data-[state=open]:animate-overlayShow bg-black bg-opacity-20 fixed inset-0" />
-        <AlertDialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-lg focus:outline-none">
+        <AlertDialog.Overlay className="data-[state=open]:animate-overlayShow bg-black bg-opacity-20 fixed inset-0 z-10" />
+        <AlertDialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-lg focus:outline-none z-20">
           <AlertDialog.Title className="font-semibold text-lg">
             {title}
           </AlertDialog.Title>
@@ -26,11 +28,13 @@ const AlertDialogComponent: NextPage<AlertDialogComponentProps> = ({
             {description}
           </AlertDialog.Description>
           <div className="flex justify-end">
-            <AlertDialog.Cancel asChild>
-              <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 h-10 items-center justify-center rounded-md px-4 font-medium outline-none">
-                닫기
-              </button>
-            </AlertDialog.Cancel>
+            {canClose ? (
+              <AlertDialog.Cancel asChild>
+                <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 h-10 items-center justify-center rounded-md px-4 font-medium outline-none">
+                  닫기
+                </button>
+              </AlertDialog.Cancel>
+            ) : null}
           </div>
         </AlertDialog.Content>
       </AlertDialog.Portal>
