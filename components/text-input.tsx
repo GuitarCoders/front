@@ -3,7 +3,8 @@ import { UseFormRegisterReturn } from "react-hook-form";
 
 interface TextInputProps {
   type?: "text" | "email" | "password";
-  placeholder: string;
+  placeholder?: string;
+  defaultValue?: string;
   loading?: boolean;
   register: UseFormRegisterReturn;
 }
@@ -11,6 +12,7 @@ interface TextInputProps {
 const TextInput: NextPage<TextInputProps> = ({
   type = "text",
   placeholder,
+  defaultValue,
   loading,
   register,
 }) => {
@@ -18,6 +20,7 @@ const TextInput: NextPage<TextInputProps> = ({
     <input
       type={type}
       placeholder={placeholder}
+      defaultValue={defaultValue}
       autoComplete="off"
       autoSave="off"
       disabled={loading}
