@@ -2,7 +2,7 @@ import ExternalLoginButton from "@components/external-login-button";
 import SubmitButton from "@components/submit-button";
 import { useLazyQuery, gql } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import TextInput from "@components/text-input";
@@ -41,7 +41,7 @@ interface LoginResponse {
   };
 }
 
-const SignIn = () => {
+const Login = () => {
   const router = useRouter();
   const { register, handleSubmit } = useForm<LoginForm>();
 
@@ -51,13 +51,15 @@ const SignIn = () => {
   >(GET_LOGIN);
   const onValid = async (formData: LoginForm) => {
     if (loading) return;
-    await getLogin({ variables: formData });
+    const result = await getLogin({ variables: formData });
+    if (result.error) {
+      return openDialog();
+    }
   };
 
-  const [LoginFailure] = useAlertDialog({
+  const [LoginFailure, { openDialog }] = useAlertDialog({
     title: "로그인 실패 😭",
     description: "일치하는 회원 정보를 찾지 못했어요.",
-    error: !!error,
   });
 
   // 로그인 페이지에 진입 했을 때, token이 이미 있어도 삭제 시킴.
@@ -115,7 +117,7 @@ const SignIn = () => {
         <div className="px-8 pb-8 flex justify-center">
           <p className="text-sm text-gray-500">
             아직 나도하루 계정이 없나요?{" "}
-            <Link href="/auth/signup" className="underline text-violet-600">
+            <Link href="/sign-up" className="underline text-violet-600">
               회원가입 하기
             </Link>
           </p>
@@ -130,4 +132,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Login;

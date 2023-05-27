@@ -57,6 +57,7 @@ const SignUp = () => {
     SignUpResponse,
     SignUpForm
   >(SIGN_UP);
+
   const onValid = async (formData: SignUpForm) => {
     if (loading) return;
     console.log("FD", formData);
@@ -123,7 +124,7 @@ const SignUp = () => {
       <div className="px-8 pb-8 flex justify-center">
         <p className="text-sm text-gray-500">
           이미 나도하루 계정을 만들었나요?{" "}
-          <Link href="/auth/signin" className="underline text-violet-600">
+          <Link href="/login" className="underline text-violet-600">
             로그인 하기
           </Link>
         </p>
