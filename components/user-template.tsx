@@ -15,21 +15,31 @@ const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
   const router = useRouter();
   const user = useUser();
 
-  const [UserAlert] = useAlertDialog({
+  const [error, setError] = useState(false);
+  const [UserAlert, { openDialog }] = useAlertDialog({
     title: "유저 정보 오류",
     description:
       "유저 정보를 찾는 과정에서 오류가 발생했습니다. 재로그인이 필요해요.",
-    error: true,
+    error,
   });
+
+  useEffect(() => {
+    if (user === undefined) {
+      setError(true);
+    }
+  }, [user]);
+
   const onSettingsClick = () => {
     if (user) {
       router.push("/me/settings");
+    } else {
+      openDialog();
     }
   };
 
-  if (!user) return <UserAlert />;
   return (
     <>
+      <UserAlert />
       <section>
         <div className="h-56 bg-slate-100 flex flex-col justify-end p-4 gap-3 relative">
           <div className="flex flex-col gap-3">
