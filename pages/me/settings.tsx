@@ -2,8 +2,7 @@ import Layout from "@components/layout";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import Textarea from "@components/textarea";
-import useAlertDialog from "@libs/useAlertDialog";
-import useUser, { User } from "@libs/useUser";
+import useUser from "@libs/useUser";
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 
