@@ -7,14 +7,14 @@ export interface User {
   account_id: string;
   about_me: string;
 }
-type UseUserResult = User | null;
+type UseUserResult = User | null | undefined;
 
 export default function useUser(): UseUserResult {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UseUserResult>(null);
   useEffect(() => {
     const lsUser = localStorage.getItem("user");
     if (lsUser === null) {
-      return;
+      setUser(undefined);
     } else {
       setUser(JSON.parse(lsUser));
     }
