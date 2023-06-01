@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import PostPreview from "./post-preview";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useUser from "@libs/useUser";
+import useUser from "hooks/useUser";
 import useAlertDialog from "@libs/useAlertDialog";
 import { useEffect, useState } from "react";
 
