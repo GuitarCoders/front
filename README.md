@@ -13,4 +13,7 @@
 
 - Next.js
 - TypeScript
--
+- Tailwind CSS
+- Apollo Client
+- GraphQL
+- WebSocket
