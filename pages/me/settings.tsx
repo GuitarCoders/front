@@ -24,6 +24,13 @@ const EDIT_PROFILE = gql`
     }
   }
 `;
+const DELETE_USER = gql`
+  mutation DeleteUser {
+    deleteUser(deleteUserData: { deleteConfirm: true }) {
+      deleteStatus
+    }
+  }
+`;
 
 interface EditProfileForm {
   name: string;
@@ -43,40 +50,99 @@ interface EditProfileResponse {
   };
 }
 
+interface DeleteUserResponse {
+  deleteUser: {
+    deleteStatus: boolean;
+  };
+}
+
 const Settings: NextPage = () => {
-  const { register, handleSubmit } = useForm<EditProfileForm>();
   const router = useRouter();
-  const [editProfile, { loading }] = useMutation<
+  const alert = useAlert();
+  const user = useUser();
+
+  const { register, handleSubmit } = useForm<EditProfileForm>();
+  const [editProfile, { loading: editLoading }] = useMutation<
     EditProfileResponse,
     EditProfileForm
   >(EDIT_PROFILE);
-  const alert = useAlert();
+  const [deleteUser, { loading: deleteLoading }] =
+    useMutation<DeleteUserResponse>(DELETE_USER);
 
-  const user = useUser();
+  const goToLoginPage = () => {
+    router.push("/login");
+  };
+  const alertEditSuccess = () => {
+    alert({
+      visible: true,
+      title: "수정 완료",
+      description: "입력하신 정보로 회원 정보 수정이 완료되었습니다.",
+      closeBtnAction: () => {
+        router.back();
+      },
+    });
+  };
+  const alertEditFailed = () => {
+    alert({
+      visible: true,
+      title: "정보 수정 중 오류 발생",
+      description:
+        "회원님이 입력하신 정보를 반영하는 과정에서 오류가 발생했어요.",
+    });
+  };
+  const alertDeleteSuccess = () => {
+    alert({
+      visible: true,
+      title: "삭제 완료",
+      description: "회원 정보가 안전하게 삭제되었습니다.",
+      closeBtn: false,
+      extraBtnText: "로그인 페이지로",
+      extraBtnAction: goToLoginPage,
+    });
+  };
+  const alertConfirmDelete = () => {
+    alert({
+      visible: true,
+      title: "회원 탈퇴",
+      description:
+        "탈퇴하기 버튼을 누르면 고객님의 회원 정보는 모두 삭제되며 이는 되돌릴 수 없습니다. 정말로 탈퇴하시겠습니까?",
+      extraBtnText: "삭제하기",
+      extraBtnAction: deleteAccount,
+      extraBtnColor: "red",
+    });
+  };
+  const alertDeleteFailed = () => {
+    alert({
+      visible: true,
+      title: "탈퇴 실패",
+      description:
+        "탈퇴 처리 중에 오류가 발생했습니다. 관리자에게 문의해주세요.",
+    });
+  };
+  const deleteAccount = async () => {
+    if (deleteLoading) return;
+    try {
+      const result = await deleteUser();
+      if (result.data?.deleteUser) {
+        alertDeleteSuccess();
+      } else {
+        alertDeleteFailed();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const onValid = async (formData: EditProfileForm) => {
-    if (loading) return;
-    console.log("FD", formData);
+    if (editLoading) return;
     try {
       const result = await editProfile({ variables: formData });
       if (result) {
-        alert({
-          visible: true,
-          title: "수정 완료",
-          description: "입력하신 정보로 회원 정보 수정이 완료되었습니다.",
-          closeBtnAction: () => {
-            router.back();
-          },
-        });
+        alertEditSuccess();
       }
       console.log("result", result);
     } catch (error) {
       console.error(error);
-      alert({
-        visible: true,
-        title: "정보 수정 중 오류 발생",
-        description:
-          "회원님이 입력하신 정보를 반영하는 과정에서 오류가 발생했어요.",
-      });
+      alertEditFailed();
     }
   };
 
@@ -103,7 +169,13 @@ const Settings: NextPage = () => {
             placeholder="자기소개"
             defaultValue={user?.about_me}
           />
-          <SubmitButton text="변경하기" loading={loading} />
+          <SubmitButton text="변경하기" loading={editLoading} />
+          <SubmitButton
+            text="회원 탈퇴하기"
+            destructive
+            type="button"
+            onClick={alertConfirmDelete}
+          />
         </form>
       </Layout>
     </>
