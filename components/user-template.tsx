@@ -3,8 +3,7 @@ import PostPreview from "./post-preview";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useUser from "hooks/useUser";
-import useAlertDialog from "@libs/useAlertDialog";
-import { useEffect, useState } from "react";
+import useAlert from "hooks/useAlert";
 
 interface UserTemplateProps {
   isMe?: boolean;
@@ -14,32 +13,35 @@ interface UserTemplateProps {
 const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
   const router = useRouter();
   const user = useUser();
+  const alert = useAlert();
 
-  const [error, setError] = useState(false);
-  const [UserAlert, { openDialog }] = useAlertDialog({
-    title: "유저 정보 오류",
-    description:
-      "유저 정보를 찾는 과정에서 오류가 발생했습니다. 재로그인이 필요해요.",
-    error,
-  });
-
-  useEffect(() => {
-    if (user === undefined) {
-      setError(true);
-    }
-  }, [user]);
+  const goToSettingPage = () => {
+    router.push("/me/settings");
+  };
+  const goToLoginPage = () => {
+    router.push("/login");
+  };
+  const showNoInfoAlert = () => {
+    alert({
+      visible: true,
+      title: "사용자 정보 오류",
+      description:
+        "고객님의 정보를 찾는 과정에서 오류가 발생했습니다. 재로그인이 필요합니다.",
+      extraBtnText: "다시 로그인",
+      extraBtnAction: goToLoginPage,
+    });
+  };
 
   const onSettingsClick = () => {
     if (user) {
-      router.push("/me/settings");
+      goToSettingPage();
     } else {
-      openDialog();
+      showNoInfoAlert();
     }
   };
 
   return (
     <>
-      <UserAlert />
       <section>
         <div className="h-56 bg-slate-100 flex flex-col justify-end p-4 gap-3 relative">
           <div className="flex flex-col gap-3">
