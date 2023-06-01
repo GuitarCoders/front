@@ -2,11 +2,11 @@ import ExternalLoginButton from "@components/external-login-button";
 import SubmitButton from "@components/submit-button";
 import { useLazyQuery, gql } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import TextInput from "@components/text-input";
-import useAlertDialog from "@libs/useAlertDialog";
+import useAlert from "hooks/useAlert";
 
 interface LoginForm {
   username: string;
@@ -44,6 +44,7 @@ interface LoginResponse {
 const Login = () => {
   const router = useRouter();
   const { register, handleSubmit } = useForm<LoginForm>();
+  const alert = useAlert();
 
   const [getLogin, { loading, error, data }] = useLazyQuery<
     LoginResponse,
@@ -52,15 +53,15 @@ const Login = () => {
   const onValid = async (formData: LoginForm) => {
     if (loading) return;
     const result = await getLogin({ variables: formData });
-    if (result.error) {
-      return openDialog();
+    console.log("login result", result);
+    if (result.data === undefined) {
+      alert({
+        visible: true,
+        title: "로그인 실패",
+        description: "로그인 과정 중에 오류가 발생했어요.",
+      });
     }
   };
-
-  const [LoginFailure, { openDialog }] = useAlertDialog({
-    title: "로그인 실패 😭",
-    description: "일치하는 회원 정보를 찾지 못했어요.",
-  });
 
   // 로그인 페이지에 진입 했을 때, token이 이미 있어도 삭제 시킴.
   useEffect(() => {
@@ -86,7 +87,6 @@ const Login = () => {
 
   return (
     <>
-      <LoginFailure />
       <main className="max-w-2xl mx-auto">
         <section className="flex p-8 my-10">
           <h1 className="text-4xl font-bold leading-snug">
