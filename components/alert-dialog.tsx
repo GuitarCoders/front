@@ -1,4 +1,5 @@
 import { alertAtom } from "@libs/atoms";
+import { cls } from "@libs/cls";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useRecoilState } from "recoil";
 
@@ -12,9 +13,21 @@ const AlertDialogComponent = () => {
       closeBtnAction,
       extraBtnText,
       extraBtnAction,
+      extraBtnColor,
     },
     alert,
   ] = useRecoilState(alertAtom);
+
+  const buttonColor = (kind: "basic" | "red" | "green") => {
+    switch (kind) {
+      case "basic":
+        return "text-gray-500 bg-gray-100 hover:bg-gray-200";
+      case "red":
+        return "text-white bg-rose-600 hover:bg-rose-700-";
+      case "green":
+        return "text-white bg-green-500 hover:bg-green-600";
+    }
+  };
 
   const closeDialog = () => {
     alert({ visible: false, title: "", description: "" });
@@ -46,7 +59,12 @@ const AlertDialogComponent = () => {
               <AlertDialog.Action asChild>
                 <button
                   onClick={onExtraBtnClick}
-                  className="text-gray-500 bg-gray-100 hover:bg-gray-200 h-10 items-center justify-center rounded-md px-4 font-medium outline-none"
+                  className={cls(
+                    "h-10 items-center justify-center rounded-md px-4 font-medium outline-none",
+                    extraBtnColor
+                      ? buttonColor(extraBtnColor)
+                      : "text-gray-500 bg-gray-100 hover:bg-gray-200"
+                  )}
                 >
                   {extraBtnText}
                 </button>

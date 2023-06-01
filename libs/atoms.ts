@@ -8,6 +8,7 @@ interface AlertAtomState {
   closeBtnAction?: (() => void) | null;
   extraBtnText?: string;
   extraBtnAction?: (() => void) | null;
+  extraBtnColor?: "basic" | "red" | "green";
 }
 export const alertAtom = atom<AlertAtomState>({
   key: "alertDialog",
