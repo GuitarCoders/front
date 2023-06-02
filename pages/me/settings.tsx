@@ -70,7 +70,7 @@ const Settings: NextPage = () => {
     useMutation<DeleteUserResponse>(DELETE_USER);
 
   const goToLoginPage = () => {
-    router.push("/login");
+    router.push("/login").then(() => router.reload());
   };
   const alertEditSuccess = () => {
     alert({
@@ -137,9 +137,16 @@ const Settings: NextPage = () => {
     try {
       const result = await editProfile({ variables: formData });
       if (result) {
+        const user = {
+          _id: result.data?.updateUser._id,
+          name: result.data?.updateUser.name,
+          email: result.data?.updateUser.email,
+          account_id: result.data?.updateUser.account_id,
+          about_me: result.data?.updateUser.about_me,
+        };
+        window.localStorage.setItem("user", JSON.stringify(user));
         alertEditSuccess();
       }
-      console.log("result", result);
     } catch (error) {
       console.error(error);
       alertEditFailed();

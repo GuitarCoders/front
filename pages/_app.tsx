@@ -1,5 +1,5 @@
 import "@styles/globals.css";
-import React, { createContext } from "react";
+import React from "react";
 import type { AppProps } from "next/app";
 import {
   ApolloClient,
@@ -9,7 +9,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import AlertDialogComponent from "@components/alert-dialog";
-import { RecoilRoot, useRecoilValue } from "recoil";
+import { RecoilRoot } from "recoil";
 
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_BASE_URL,
