@@ -7,10 +7,9 @@ const User = () => {
   const {
     query: { userId },
   } = useRouter();
-  const [profile, { loading }] = useUser(userId + "");
-  console.log(profile);
+  const [profile, { loading }] = useUser(`${userId}`);
   return (
-    <Layout title="나는">
+    <Layout canGoBack>
       <UserTemplate profile={profile} loading={loading} />
     </Layout>
   );

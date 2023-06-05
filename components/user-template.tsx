@@ -8,26 +8,24 @@ interface UserTemplateProps {
   isMe?: boolean;
   isFriend?: boolean;
   profile: UserState;
-  loading: boolean;
+  loading?: boolean;
 }
 
 const UserTemplate: NextPage<UserTemplateProps> = ({
   isMe,
   isFriend,
   profile,
-  loading,
 }) => {
   const router = useRouter();
 
   const goToSettingPage = () => {
-    router.push(`/${router.query.userId}/settings`);
+    router.push(`/users/settings`);
   };
 
   const onSettingsClick = () => {
     goToSettingPage();
   };
 
-  if (loading) return null;
   return (
     <>
       <section>
@@ -82,7 +80,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
               ) : null}
               {isMe || isFriend ? null : (
                 <Link
-                  href="/friends/minna_idol"
+                  href={`/friends/${profile?.account_id}`}
                   className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1"
                 >
                   <svg
