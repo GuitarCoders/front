@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { cls } from "@libs/cls";
 
-type Link = "/" | "/chat" | "/me" | "/friends";
+type Link = "/" | "/chat" | "/users/me" | "/friends";
 
 interface FooterItemProps {
   title: string;
@@ -59,7 +59,7 @@ const icons = {
       </svg>
     ),
   },
-  "/me": {
+  "/users/me": {
     active: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
