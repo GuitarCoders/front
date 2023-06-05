@@ -3,6 +3,8 @@ import SubmitButton from "@components/submit-button";
 import Textarea from "@components/textarea";
 import { useRouter } from "next/router";
 
+// TODO: 상대방이 자신을 블락했는지 아닌지를 파악해서 이 페이지에 못들어오게 하거나, 어떻게 들어왔더라도 친구 신청이 안되게 막아야함.
+
 const NewFriend = () => {
   const router = useRouter();
   return (
