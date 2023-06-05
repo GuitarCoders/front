@@ -19,7 +19,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
   const router = useRouter();
 
   const goToSettingPage = () => {
-    router.push(`/users/settings`);
+    router.push(`/users/edit`);
   };
 
   const onSettingsClick = () => {
