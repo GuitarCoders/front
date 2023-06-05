@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { v1 } from "uuid";
 
 interface AlertAtomState {
   visible: boolean;
@@ -12,7 +13,7 @@ interface AlertAtomState {
   relogin?: boolean;
 }
 export const alertAtom = atom<AlertAtomState>({
-  key: "alertDialog",
+  key: `alertDialog/${v1()}`,
   default: {
     visible: false,
     title: "",
