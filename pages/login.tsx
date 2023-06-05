@@ -70,7 +70,7 @@ const Login = () => {
   // 로그인 시도 성공 시, 토큰 저장 시켜서 메인 페이지로 보냄
   useEffect(() => {
     if (data && data.login.status) {
-      localStorage.setItem("_id", data.login._id);
+      localStorage.setItem("account_id", data.login.account_id);
       localStorage.setItem("token", data.login.jwt_token);
       router.push("/");
     }
