@@ -2,44 +2,32 @@ import { NextPage } from "next";
 import PostPreview from "./post-preview";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useUser from "hooks/useUser";
-import useAlert from "hooks/useAlert";
+import { UserState } from "hooks/useUser";
 
 interface UserTemplateProps {
   isMe?: boolean;
   isFriend?: boolean;
+  profile: UserState;
+  loading: boolean;
 }
 
-const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
+const UserTemplate: NextPage<UserTemplateProps> = ({
+  isMe,
+  isFriend,
+  profile,
+  loading,
+}) => {
   const router = useRouter();
-  const user = useUser();
-  const alert = useAlert();
 
   const goToSettingPage = () => {
-    router.push("/me/settings");
-  };
-  const goToLoginPage = () => {
-    router.push("/login");
-  };
-  const showNoInfoAlert = () => {
-    alert({
-      visible: true,
-      title: "사용자 정보 오류",
-      description:
-        "고객님의 정보를 찾는 과정에서 오류가 발생했습니다. 재로그인이 필요합니다.",
-      extraBtnText: "다시 로그인",
-      extraBtnAction: goToLoginPage,
-    });
+    router.push(`/${router.query.userId}/settings`);
   };
 
   const onSettingsClick = () => {
-    if (user) {
-      goToSettingPage();
-    } else {
-      showNoInfoAlert();
-    }
+    goToSettingPage();
   };
 
+  if (loading) return null;
   return (
     <>
       <section>
@@ -63,7 +51,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
                         d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
                       />
                     </svg>
-                    친구 (82)
+                    친구 ({profile?.friends.length})
                   </button>
                   <button
                     onClick={onSettingsClick}
@@ -117,13 +105,11 @@ const UserTemplate: NextPage<UserTemplateProps> = ({ isMe, isFriend }) => {
             </div>
             <div className="w-12 h-12 bg-slate-300 rounded-md" />
             <div className="flex flex-col">
-              <h5 className="font-semibold">민나노아이도루</h5>
-              <p className="text-gray-400 text-sm">@minna_idol</p>
+              <h5 className="font-semibold">{profile?.name}</h5>
+              <p className="text-gray-400 text-sm">@{profile?.account_id}</p>
             </div>
           </div>
-          <p className="text-xs text-slate-600">
-            여기에 자기소개를 작성합니다.
-          </p>
+          <p className="text-xs text-slate-600">{profile?.about_me}</p>
         </div>
         <div className="grid grid-cols-3 h-12 border-b">
           <button className="text-violet-400 font-bold">이야기</button>
