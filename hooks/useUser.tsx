@@ -1,19 +1,9 @@
-import { ApolloError, gql, useLazyQuery } from "@apollo/client";
+import { ApolloError, useLazyQuery } from "@apollo/client";
 import { useCallback, useEffect, useState } from "react";
 import useAlert from "./useAlert";
+import { UserByAccountIdResponse } from "graphql/quries.type";
+import { USER_BY_ACCOUNT_ID } from "graphql/quries";
 
-const USER_BY_ACCOUNT_ID = gql`
-  query UserByAccountId($account_id: String!) {
-    userByAccountId(account_id: $account_id) {
-      _id
-      name
-      email
-      account_id
-      about_me
-      friends
-    }
-  }
-`;
 export interface User {
   _id: string;
   name: string;
@@ -22,15 +12,11 @@ export interface User {
   about_me: string;
   friends: string[];
 }
-interface UserByAccountIdResponse {
-  userByAccountId: {
-    __typename: "User";
-  } & User;
-}
+
 export type UserState = User | null | undefined;
 type UseUserReturn = [UserState, { loading: boolean; error?: ApolloError }];
 
-export default function useUser(requestedAccountId?: string): UseUserReturn {
+export default function useUser(accountId?: string): UseUserReturn {
   const [user, setUser] = useState<UserState>(null);
   const alert = useAlert();
   const [userByAccountId, { loading, error }] = useLazyQuery<
@@ -49,8 +35,7 @@ export default function useUser(requestedAccountId?: string): UseUserReturn {
   );
 
   useEffect(() => {
-    const userAccountId = localStorage.getItem("account_id");
-    if (userAccountId === null) {
+    if (!accountId) {
       alert({
         visible: true,
         title: "로그인 알림",
@@ -60,11 +45,11 @@ export default function useUser(requestedAccountId?: string): UseUserReturn {
       setUser(undefined);
     } else {
       (async () => {
-        const user = await getUser(requestedAccountId ?? userAccountId);
+        const user = await getUser(accountId);
         setUser(user);
       })();
     }
-  }, [alert, getUser, requestedAccountId]);
+  }, [alert, getUser, accountId]);
 
   return [user, { loading, error }];
 }
