@@ -59,7 +59,7 @@ interface DeleteUserResponse {
 const Settings: NextPage = () => {
   const router = useRouter();
   const alert = useAlert();
-  const user = useUser();
+  const [user] = useUser();
 
   const { register, handleSubmit } = useForm<EditProfileForm>();
   const [editProfile, { loading: editLoading }] = useMutation<
@@ -78,7 +78,7 @@ const Settings: NextPage = () => {
       title: "수정 완료",
       description: "입력하신 정보로 회원 정보 수정이 완료되었습니다.",
       closeBtnAction: () => {
-        router.back();
+        router.push("/me").then(() => router.reload());
       },
     });
   };
@@ -137,14 +137,6 @@ const Settings: NextPage = () => {
     try {
       const result = await editProfile({ variables: formData });
       if (result) {
-        const user = {
-          _id: result.data?.updateUser._id,
-          name: result.data?.updateUser.name,
-          email: result.data?.updateUser.email,
-          account_id: result.data?.updateUser.account_id,
-          about_me: result.data?.updateUser.about_me,
-        };
-        window.localStorage.setItem("user", JSON.stringify(user));
         alertEditSuccess();
       }
     } catch (error) {
@@ -164,7 +156,7 @@ const Settings: NextPage = () => {
           <TextInput
             register={register("name", { required: true })}
             placeholder="이름"
-            defaultValue={user?.name}
+            defaultValue={user.name}
           />
           <TextInput
             type="password"
@@ -174,7 +166,7 @@ const Settings: NextPage = () => {
           <Textarea
             register={register("about_me", { required: true })}
             placeholder="자기소개"
-            defaultValue={user?.about_me}
+            defaultValue={user.about_me}
           />
           <SubmitButton text="변경하기" loading={editLoading} />
           <SubmitButton
