@@ -76,10 +76,7 @@ const SignUp = () => {
       description:
         "입력한 정보로 회원가입이 완료되었어요. 이제 로그인 하러 갈까요?",
       closeBtn: false,
-      extraBtnText: "로그인 화면으로",
-      extraBtnAction: () => {
-        router.push("/login");
-      },
+      relogin: true,
     });
   };
 

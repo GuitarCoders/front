@@ -9,6 +9,7 @@ interface AlertAtomState {
   extraBtnText?: string;
   extraBtnAction?: (() => void) | null;
   extraBtnColor?: "basic" | "red" | "green";
+  relogin?: boolean;
 }
 export const alertAtom = atom<AlertAtomState>({
   key: "alertDialog",

@@ -1,9 +1,11 @@
 import { alertAtom } from "@libs/atoms";
 import { cls } from "@libs/cls";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 
 const AlertDialogComponent = () => {
+  const router = useRouter();
   const [
     {
       visible,
@@ -14,6 +16,7 @@ const AlertDialogComponent = () => {
       extraBtnText,
       extraBtnAction,
       extraBtnColor,
+      relogin,
     },
     alert,
   ] = useRecoilState(alertAtom);
@@ -43,6 +46,11 @@ const AlertDialogComponent = () => {
     closeDialog();
   };
 
+  const pushToLogin = () => {
+    router.push("/login");
+    closeDialog();
+  };
+
   return (
     <AlertDialog.Root open={visible}>
       <AlertDialog.Portal>
@@ -67,6 +75,21 @@ const AlertDialogComponent = () => {
                   )}
                 >
                   {extraBtnText}
+                </button>
+              </AlertDialog.Action>
+            ) : null}
+            {relogin ? (
+              <AlertDialog.Action asChild>
+                <button
+                  onClick={pushToLogin}
+                  className={cls(
+                    "h-10 items-center justify-center rounded-md px-4 font-medium outline-none",
+                    extraBtnColor
+                      ? buttonColor(extraBtnColor)
+                      : "text-gray-500 bg-gray-100 hover:bg-gray-200"
+                  )}
+                >
+                  로그인 페이지로
                 </button>
               </AlertDialog.Action>
             ) : null}
