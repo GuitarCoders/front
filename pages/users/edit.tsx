@@ -3,9 +3,13 @@ import Layout from "@components/layout";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import Textarea from "@components/textarea";
+import { initializeApollo } from "@libs/apollo-client";
+import { USER_BY_ACCOUNT_ID } from "graphql/quries";
+import { UserByAccountIdResponse } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
-import useUser from "hooks/useUser";
-import { NextPage } from "next";
+import useUser, { User } from "hooks/useUser";
+import { GetServerSidePropsContext, NextPage } from "next";
+import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
@@ -56,10 +60,13 @@ interface DeleteUserResponse {
   };
 }
 
-const Settings: NextPage = () => {
+interface EditProfileProps {
+  user: User;
+}
+
+const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
   const router = useRouter();
   const alert = useAlert();
-  const [user] = useUser();
 
   const { register, handleSubmit } = useForm<EditProfileForm>();
   const [editProfile, { loading: editLoading }] = useMutation<
@@ -78,7 +85,7 @@ const Settings: NextPage = () => {
       title: "수정 완료",
       description: "입력하신 정보로 회원 정보 수정이 완료되었습니다.",
       closeBtnAction: () => {
-        router.push("/me").then(() => router.reload());
+        router.push("/users/me");
       },
     });
   };
@@ -181,4 +188,20 @@ const Settings: NextPage = () => {
   );
 };
 
-export default Settings;
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const { accountId, accessToken } = cookies(ctx);
+  const apolloClient = initializeApollo(null, accessToken);
+
+  const {
+    data: { userByAccountId },
+  } = await apolloClient.query<UserByAccountIdResponse>({
+    query: USER_BY_ACCOUNT_ID,
+    variables: { account_id: accountId },
+  });
+
+  return {
+    props: { user: userByAccountId },
+  };
+}
+
+export default EditProfile;
