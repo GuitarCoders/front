@@ -6,6 +6,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import cookie from "react-cookies";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
 
@@ -17,28 +18,31 @@ const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_BASE_URL,
 });
 
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem("token");
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-});
+const createAuthLink = (token?: string) => {
+  const authToken = token ?? cookie.load("accessToken") ?? undefined;
+  return setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: authToken ? `Bearer ${authToken}` : "",
+      },
+    };
+  });
+};
 
-function createApolloClient() {
+function createApolloClient(token?: string) {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: authLink.concat(httpLink),
+    link: createAuthLink(token).concat(httpLink),
     cache: new InMemoryCache(),
   });
 }
 
 export function initializeApollo(
-  initialState: NormalizedCacheObject | null = null
+  initialState: NormalizedCacheObject | null = null,
+  token?: string
 ) {
-  const _apolloClient = apolloClient ?? createApolloClient();
+  const _apolloClient = apolloClient ?? createApolloClient(token);
 
   if (initialState) {
     const existingCache = _apolloClient.extract();
