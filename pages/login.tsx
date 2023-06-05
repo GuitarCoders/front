@@ -4,6 +4,7 @@ import { useLazyQuery, gql } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import cookie from "react-cookies";
 import Link from "next/link";
 import TextInput from "@components/text-input";
 import useAlert from "hooks/useAlert";
@@ -41,10 +42,13 @@ interface LoginResponse {
   };
 }
 
+const cookiePath = "/";
+const cookieExpires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+
 const Login = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<LoginForm>();
   const alert = useAlert();
+  const { register, handleSubmit } = useForm<LoginForm>();
 
   const [getLogin, { loading, data }] = useLazyQuery<LoginResponse, LoginForm>(
     GET_LOGIN
@@ -52,7 +56,6 @@ const Login = () => {
   const onValid = async (formData: LoginForm) => {
     if (loading) return;
     const result = await getLogin({ variables: formData });
-    console.log("login result", result);
     if (result.data === undefined) {
       alert({
         visible: true,
@@ -65,13 +68,27 @@ const Login = () => {
   // 로그인 페이지에 진입 했을 때, token이 이미 있어도 삭제 시킴.
   useEffect(() => {
     localStorage.clear();
+    cookie.remove("accessToken");
+    cookie.remove("accountId");
   }, []);
 
   // 로그인 시도 성공 시, 토큰 저장 시켜서 메인 페이지로 보냄
   useEffect(() => {
     if (data && data.login.status) {
-      localStorage.setItem("account_id", data.login.account_id);
-      localStorage.setItem("token", data.login.jwt_token);
+      cookie.save("accessToken", data.login.jwt_token, {
+        path: cookiePath,
+        expires: cookieExpires,
+        sameSite: "lax",
+        httpOnly: process.env.HTTP_ONLY === "true",
+      });
+      cookie.save("accountId", data.login.account_id, {
+        path: cookiePath,
+        expires: cookieExpires,
+        sameSite: "lax",
+        httpOnly: process.env.HTTP_ONLY === "true",
+      });
+      // localStorage.setItem("account_id", data.login.account_id);
+      // localStorage.setItem("token", data.login.jwt_token);
       router.push("/");
     }
   }, [data, router]);
