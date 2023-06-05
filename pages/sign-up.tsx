@@ -55,10 +55,9 @@ const SignUp = () => {
   const { register, handleSubmit } = useForm<SignUpForm>();
   const alert = useAlert();
 
-  const [getSignUp, { loading, error }] = useMutation<
-    SignUpResponse,
-    SignUpForm
-  >(SIGN_UP);
+  const [getSignUp, { loading }] = useMutation<SignUpResponse, SignUpForm>(
+    SIGN_UP
+  );
 
   const showError = () => {
     alert({
