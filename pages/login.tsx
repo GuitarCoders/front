@@ -87,9 +87,7 @@ const Login = () => {
         sameSite: "lax",
         httpOnly: process.env.HTTP_ONLY === "true",
       });
-      // localStorage.setItem("account_id", data.login.account_id);
-      // localStorage.setItem("token", data.login.jwt_token);
-      router.push("/");
+      router.push("/").then(() => router.reload());
     }
   }, [data, router]);
 
