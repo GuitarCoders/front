@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import useAlert from "hooks/useAlert";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -100,6 +101,9 @@ const SignUp = () => {
 
   return (
     <>
+      <Head>
+        <title>회원가입 | 나도하루</title>
+      </Head>
       <main className="max-w-2xl mx-auto">
         <section className="flex p-8 my-10">
           <h1 className="text-4xl font-bold leading-snug">

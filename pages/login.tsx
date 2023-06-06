@@ -8,6 +8,7 @@ import cookie from "react-cookies";
 import Link from "next/link";
 import TextInput from "@components/text-input";
 import useAlert from "hooks/useAlert";
+import Head from "next/head";
 
 interface LoginForm {
   username: string;
@@ -93,6 +94,9 @@ const Login = () => {
 
   return (
     <>
+      <Head>
+        <title>로그인 | 나도하루</title>
+      </Head>
       <main className="max-w-2xl mx-auto">
         <section className="flex p-8 my-10">
           <h1 className="text-4xl font-bold leading-snug">
