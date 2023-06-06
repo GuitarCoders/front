@@ -7,7 +7,7 @@ import { initializeApollo } from "@libs/apollo-client";
 import { USER_BY_ACCOUNT_ID } from "graphql/quries";
 import { UserByAccountIdResponse } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
-import useUser, { User } from "hooks/useUser";
+import { User } from "hooks/useUser";
 import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
