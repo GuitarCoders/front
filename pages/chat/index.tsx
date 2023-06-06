@@ -9,7 +9,6 @@ interface ChatProps {
 }
 
 const Chat: NextPage<ChatProps> = ({ accountId }) => {
-  if (!accountId) return null;
   return (
     <Layout title="메시지" showNewChatBtn>
       <section>
