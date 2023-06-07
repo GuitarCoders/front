@@ -34,7 +34,10 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
             <div className="absolute right-4 top-4 flex gap-2">
               {isMe ? (
                 <>
-                  <button className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1">
+                  <Link
+                    href="/me/friends"
+                    className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -50,7 +53,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
                       />
                     </svg>
                     친구 ({profile?.friends.length})
-                  </button>
+                  </Link>
                   <button
                     onClick={onSettingsClick}
                     className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1"
