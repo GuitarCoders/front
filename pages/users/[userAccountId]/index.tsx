@@ -32,8 +32,8 @@ const UserPage: NextPage<UserPageProps> = ({ isMe, profile }) => {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { accountId, accessToken } = cookies(ctx);
-  const userId = ctx.params?.userId;
-  const isMe = accountId === userId;
+  const userAccountId = ctx.params?.userAccountId;
+  const isMe = accountId === userAccountId;
   const apolloClient = initializeApollo(null, accessToken);
 
   try {
@@ -41,7 +41,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       data: { userByAccountId },
     } = await apolloClient.query<UserByAccountIdResponse>({
       query: USER_BY_ACCOUNT_ID,
-      variables: { account_id: userId },
+      variables: { account_id: userAccountId },
     });
     return {
       props: { profile: userByAccountId, isMe },
