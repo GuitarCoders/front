@@ -19,7 +19,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
   const router = useRouter();
 
   const goToSettingPage = () => {
-    router.push(`/users/edit`);
+    router.push(`/me/edit`);
   };
 
   const onSettingsClick = () => {
@@ -83,7 +83,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
               ) : null}
               {isMe || isFriend ? null : (
                 <Link
-                  href={`/friends/${profile?.account_id}`}
+                  href={`/users/${profile?.account_id}/create`}
                   className="border border-violet-400 bg-white px-2 py-1 text-sm rounded-md text-violet-400 flex items-center gap-1"
                 >
                   <svg

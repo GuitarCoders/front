@@ -85,7 +85,7 @@ const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
       title: "수정 완료",
       description: "입력하신 정보로 회원 정보 수정이 완료되었습니다.",
       closeBtnAction: () => {
-        router.push("/users/me");
+        router.push("/me");
       },
     });
   };
