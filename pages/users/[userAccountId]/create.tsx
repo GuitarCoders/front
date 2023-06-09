@@ -36,9 +36,13 @@ interface RequestForm {
   requestMessage: string;
 }
 
-const NewFriend = ({ receiveUserId }: { receiveUserId: string }) => {
+interface NewFriendProps {
+  receiveUserId: string;
+  receiveUserName: string;
+}
+
+const NewFriend = ({ receiveUserId, receiveUserName }: NewFriendProps) => {
   const router = useRouter();
-  const accountId = router.query.userAccountId;
   const alert = useAlert();
   const [createRequest, { loading }] = useMutation(CREATE_FRIEND_REQUEST);
   const { register, handleSubmit } = useForm<RequestForm>();
@@ -49,14 +53,30 @@ const NewFriend = ({ receiveUserId }: { receiveUserId: string }) => {
     try {
       const result = await createRequest({ variables });
       console.log(result);
+      alertSentRequest();
     } catch (error) {
       console.error(error);
-      alert({
-        visible: true,
-        title: "친구 신청 실패",
-        description: "친구 신청 과정에서 오류가 발생했습니다.",
-      });
+      alertError();
     }
+  };
+
+  const alertSentRequest = () => {
+    alert({
+      visible: true,
+      title: "친구 신청 완료",
+      description: `${receiveUserName} 님에게 친구 신청을 보냈습니다.`,
+      // TODO: 백엔드에서 userByAccountId에 친구와의 관계값 넣어주면, router.back() 뿐만 아니라 대상자의 프로필 데이터도 refetch 하거나 cache를 update 해 줄 필요가 있음
+      closeBtnAction: () => router.back(),
+    });
+  };
+  const alertError = () => {
+    alert({
+      visible: true,
+      title: "친구 신청 실패",
+      description: "친구 신청 과정에서 오류가 발생했습니다.",
+      // TODO: 백엔드에서 userByAccountId에 친구와의 관계값 넣어주면, router.back() 뿐만 아니라 대상자의 프로필 데이터도 refetch 하거나 cache를 update 해 줄 필요가 있음
+      closeBtnAction: () => router.back(),
+    });
   };
 
   return (
@@ -67,7 +87,7 @@ const NewFriend = ({ receiveUserId }: { receiveUserId: string }) => {
       >
         <Textarea
           register={register("requestMessage", { required: true })}
-          placeholder={`@${accountId}님께 친구신청 메시지를 보냅니다.`}
+          placeholder={`${receiveUserName} 님께 친구신청 메시지를 보냅니다.`}
         />
         <SubmitButton text="친구신청 보내기" />
       </form>
@@ -83,7 +103,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   try {
     const {
       data: {
-        userByAccountId: { _id },
+        userByAccountId: { _id, name },
       },
     } = await apolloClient.query<UserByAccountIdResponse>({
       query: USER_BY_ACCOUNT_ID,
@@ -91,7 +111,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     });
 
     return {
-      props: { receiveUserId: _id },
+      props: { receiveUserId: _id, receiveUserName: name },
     };
   } catch {
     return {
