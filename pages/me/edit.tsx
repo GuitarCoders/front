@@ -12,6 +12,7 @@ import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import cookie from "react-cookies";
 
 const EDIT_PROFILE = gql`
   mutation EditProfile($name: String!, $password: String!, $about_me: String!) {
@@ -139,6 +140,22 @@ const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
       console.error(error);
     }
   };
+  const alertLogout = () => {
+    alert({
+      visible: true,
+      title: "로그아웃",
+      description:
+        "현재 계정에서 로그아웃하고 로그인 페이지로 돌아갑니다. 계속할까요?",
+      extraBtnText: "로그아웃",
+      extraBtnAction: logout,
+      extraBtnColor: "green",
+    });
+  };
+  const logout = () => {
+    cookie.remove("accessToken");
+    cookie.remove("accountId");
+    router.push("/login");
+  };
   const onValid = async (formData: EditProfileForm) => {
     if (editLoading) return;
     try {
@@ -178,9 +195,15 @@ const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
           <SubmitButton text="변경하기" loading={editLoading} />
           <SubmitButton
             text="회원 탈퇴하기"
-            destructive
             type="button"
             onClick={alertConfirmDelete}
+            color="red"
+          />
+          <SubmitButton
+            text="로그아웃"
+            type="button"
+            onClick={alertLogout}
+            color="gray"
           />
         </form>
       </Layout>
