@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import useAlert from "hooks/useAlert";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -55,10 +56,9 @@ const SignUp = () => {
   const { register, handleSubmit } = useForm<SignUpForm>();
   const alert = useAlert();
 
-  const [getSignUp, { loading, error }] = useMutation<
-    SignUpResponse,
-    SignUpForm
-  >(SIGN_UP);
+  const [getSignUp, { loading }] = useMutation<SignUpResponse, SignUpForm>(
+    SIGN_UP
+  );
 
   const showError = () => {
     alert({
@@ -76,10 +76,7 @@ const SignUp = () => {
       description:
         "입력한 정보로 회원가입이 완료되었어요. 이제 로그인 하러 갈까요?",
       closeBtn: false,
-      extraBtnText: "로그인 화면으로",
-      extraBtnAction: () => {
-        router.push("/login");
-      },
+      relogin: true,
     });
   };
 
@@ -104,6 +101,9 @@ const SignUp = () => {
 
   return (
     <>
+      <Head>
+        <title>회원가입 | 나도하루</title>
+      </Head>
       <main className="max-w-2xl mx-auto">
         <section className="flex p-8 my-10">
           <h1 className="text-4xl font-bold leading-snug">

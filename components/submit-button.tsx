@@ -6,7 +6,7 @@ interface SubmitButtonProps {
   loading?: boolean;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
-  destructive?: boolean;
+  color?: "violet" | "red" | "gray";
 }
 
 const SubmitButton: NextPage<SubmitButtonProps> = ({
@@ -14,17 +14,26 @@ const SubmitButton: NextPage<SubmitButtonProps> = ({
   loading,
   type = "submit",
   onClick,
-  destructive = false,
+  color,
 }) => {
+  const buttonColor = (color: "violet" | "red" | "gray") => {
+    switch (color) {
+      case "violet":
+        return "bg-violet-400 focus:ring-violet-600";
+      case "red":
+        return "bg-rose-600 focus:ring-rose-700";
+      case "gray":
+        return "bg-gray-200 focus:ring-gray-400 text-black";
+    }
+  };
+
   return (
     <button
       type={type}
       onClick={onClick}
       className={cls(
         "px-4 py-2 text-white rounded-md outline-none focus:ring-2 ",
-        destructive
-          ? "bg-rose-600 focus:ring-rose-700"
-          : "bg-violet-400 focus:ring-violet-600"
+        color ? buttonColor(color) : "bg-violet-400 focus:ring-violet-600"
       )}
     >
       {loading ? "로딩 중..." : text}

@@ -1,9 +1,11 @@
 import { alertAtom } from "@libs/atoms";
 import { cls } from "@libs/cls";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 
 const AlertDialogComponent = () => {
+  const router = useRouter();
   const [
     {
       visible,
@@ -14,13 +16,15 @@ const AlertDialogComponent = () => {
       extraBtnText,
       extraBtnAction,
       extraBtnColor,
+      extraBtnLoading,
+      relogin,
     },
     alert,
   ] = useRecoilState(alertAtom);
 
-  const buttonColor = (kind: "basic" | "red" | "green") => {
-    switch (kind) {
-      case "basic":
+  const buttonColor = (color: "gray" | "red" | "green") => {
+    switch (color) {
+      case "gray":
         return "text-gray-500 bg-gray-100 hover:bg-gray-200";
       case "red":
         return "text-white bg-rose-600 hover:bg-rose-700-";
@@ -40,6 +44,11 @@ const AlertDialogComponent = () => {
     if (extraBtnAction) {
       extraBtnAction();
     }
+    closeDialog();
+  };
+
+  const pushToLogin = () => {
+    router.push("/login");
     closeDialog();
   };
 
@@ -66,13 +75,30 @@ const AlertDialogComponent = () => {
                       : "text-gray-500 bg-gray-100 hover:bg-gray-200"
                   )}
                 >
-                  {extraBtnText}
+                  {extraBtnLoading ? "로딩 중..." : extraBtnText}
+                </button>
+              </AlertDialog.Action>
+            ) : null}
+            {relogin ? (
+              <AlertDialog.Action asChild>
+                <button
+                  disabled={extraBtnLoading}
+                  onClick={pushToLogin}
+                  className={cls(
+                    "h-10 items-center justify-center rounded-md px-4 font-medium outline-none",
+                    extraBtnColor
+                      ? buttonColor(extraBtnColor)
+                      : "text-gray-500 bg-gray-100 hover:bg-gray-200"
+                  )}
+                >
+                  로그인 페이지로
                 </button>
               </AlertDialog.Action>
             ) : null}
             {closeBtn ? (
               <AlertDialog.Cancel asChild>
                 <button
+                  disabled={extraBtnLoading}
                   onClick={closeDialog}
                   className="text-gray-500 bg-gray-100 hover:bg-gray-200 h-10 items-center justify-center rounded-md px-4 font-medium outline-none"
                 >

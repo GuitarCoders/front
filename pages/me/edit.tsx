@@ -3,11 +3,16 @@ import Layout from "@components/layout";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import Textarea from "@components/textarea";
+import { initializeApollo } from "@libs/apollo-client";
+import { USER_BY_ACCOUNT_ID } from "graphql/quries";
+import { UserByAccountIdResponse } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
-import useUser from "hooks/useUser";
-import { NextPage } from "next";
+import { User } from "hooks/useUser";
+import { GetServerSidePropsContext, NextPage } from "next";
+import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import cookie from "react-cookies";
 
 const EDIT_PROFILE = gql`
   mutation EditProfile($name: String!, $password: String!, $about_me: String!) {
@@ -56,10 +61,13 @@ interface DeleteUserResponse {
   };
 }
 
-const Settings: NextPage = () => {
+interface EditProfileProps {
+  user: User;
+}
+
+const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
   const router = useRouter();
   const alert = useAlert();
-  const user = useUser();
 
   const { register, handleSubmit } = useForm<EditProfileForm>();
   const [editProfile, { loading: editLoading }] = useMutation<
@@ -78,7 +86,7 @@ const Settings: NextPage = () => {
       title: "수정 완료",
       description: "입력하신 정보로 회원 정보 수정이 완료되었습니다.",
       closeBtnAction: () => {
-        router.back();
+        router.push("/me");
       },
     });
   };
@@ -132,19 +140,27 @@ const Settings: NextPage = () => {
       console.error(error);
     }
   };
+  const alertLogout = () => {
+    alert({
+      visible: true,
+      title: "로그아웃",
+      description:
+        "현재 계정에서 로그아웃하고 로그인 페이지로 돌아갑니다. 계속할까요?",
+      extraBtnText: "로그아웃",
+      extraBtnAction: logout,
+      extraBtnColor: "green",
+    });
+  };
+  const logout = () => {
+    cookie.remove("accessToken");
+    cookie.remove("accountId");
+    router.push("/login");
+  };
   const onValid = async (formData: EditProfileForm) => {
     if (editLoading) return;
     try {
       const result = await editProfile({ variables: formData });
       if (result) {
-        const user = {
-          _id: result.data?.updateUser._id,
-          name: result.data?.updateUser.name,
-          email: result.data?.updateUser.email,
-          account_id: result.data?.updateUser.account_id,
-          about_me: result.data?.updateUser.about_me,
-        };
-        window.localStorage.setItem("user", JSON.stringify(user));
         alertEditSuccess();
       }
     } catch (error) {
@@ -164,7 +180,7 @@ const Settings: NextPage = () => {
           <TextInput
             register={register("name", { required: true })}
             placeholder="이름"
-            defaultValue={user?.name}
+            defaultValue={user.name}
           />
           <TextInput
             type="password"
@@ -174,14 +190,20 @@ const Settings: NextPage = () => {
           <Textarea
             register={register("about_me", { required: true })}
             placeholder="자기소개"
-            defaultValue={user?.about_me}
+            defaultValue={user.about_me}
           />
           <SubmitButton text="변경하기" loading={editLoading} />
           <SubmitButton
             text="회원 탈퇴하기"
-            destructive
             type="button"
             onClick={alertConfirmDelete}
+            color="red"
+          />
+          <SubmitButton
+            text="로그아웃"
+            type="button"
+            onClick={alertLogout}
+            color="gray"
           />
         </form>
       </Layout>
@@ -189,4 +211,20 @@ const Settings: NextPage = () => {
   );
 };
 
-export default Settings;
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const { accountId, accessToken } = cookies(ctx);
+  const apolloClient = initializeApollo(null, accessToken);
+
+  const {
+    data: { userByAccountId },
+  } = await apolloClient.query<UserByAccountIdResponse>({
+    query: USER_BY_ACCOUNT_ID,
+    variables: { account_id: accountId },
+  });
+
+  return {
+    props: { user: userByAccountId },
+  };
+}
+
+export default EditProfile;

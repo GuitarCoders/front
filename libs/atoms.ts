@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { v1 } from "uuid";
 
 interface AlertAtomState {
   visible: boolean;
@@ -8,10 +9,12 @@ interface AlertAtomState {
   closeBtnAction?: (() => void) | null;
   extraBtnText?: string;
   extraBtnAction?: (() => void) | null;
-  extraBtnColor?: "basic" | "red" | "green";
+  extraBtnColor?: "gray" | "red" | "green";
+  extraBtnLoading?: boolean;
+  relogin?: boolean;
 }
 export const alertAtom = atom<AlertAtomState>({
-  key: "alertDialog",
+  key: `alertDialog/${v1()}`,
   default: {
     visible: false,
     title: "",

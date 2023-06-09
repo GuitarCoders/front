@@ -1,7 +1,14 @@
 import Layout from "@components/layout";
+import useUser from "hooks/useUser";
+import { GetServerSidePropsContext, NextPage } from "next";
+import cookies from "next-cookies";
 import Link from "next/link";
 
-const Mention = () => {
+interface ChatProps {
+  accountId?: string;
+}
+
+const Chat: NextPage<ChatProps> = ({ accountId }) => {
   return (
     <Layout title="메시지" showNewChatBtn>
       <section>
@@ -24,4 +31,11 @@ const Mention = () => {
   );
 };
 
-export default Mention;
+export function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const { accountId } = cookies(ctx);
+  return {
+    props: { accountId },
+  };
+}
+
+export default Chat;
