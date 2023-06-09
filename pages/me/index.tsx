@@ -9,7 +9,7 @@ import cookies from "next-cookies";
 
 const Me = ({ user }: { user: User }) => {
   return (
-    <Layout title="나는">
+    <Layout title="나는" showNewPostBtn>
       <UserTemplate profile={user} isMe />
     </Layout>
   );
