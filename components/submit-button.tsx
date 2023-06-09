@@ -6,7 +6,7 @@ interface SubmitButtonProps {
   loading?: boolean;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
-  color?: "primary" | "destructive" | "basic";
+  color?: "violet" | "red" | "gray";
 }
 
 const SubmitButton: NextPage<SubmitButtonProps> = ({
@@ -16,13 +16,13 @@ const SubmitButton: NextPage<SubmitButtonProps> = ({
   onClick,
   color,
 }) => {
-  const buttonColor = (color: "primary" | "destructive" | "basic") => {
+  const buttonColor = (color: "violet" | "red" | "gray") => {
     switch (color) {
-      case "primary":
+      case "violet":
         return "bg-violet-400 focus:ring-violet-600";
-      case "destructive":
+      case "red":
         return "bg-rose-600 focus:ring-rose-700";
-      case "basic":
+      case "gray":
         return "bg-gray-200 focus:ring-gray-400 text-black";
     }
   };
