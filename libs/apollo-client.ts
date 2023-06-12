@@ -6,11 +6,13 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import cookie from "react-cookies";
+import Cookies from "universal-cookie";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
+
+const cookies = new Cookies();
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
@@ -19,7 +21,7 @@ const httpLink = createHttpLink({
 });
 
 const createAuthLink = (token?: string) => {
-  const authToken = token ?? cookie.load("accessToken") ?? undefined;
+  const authToken = token ?? cookies.get("accessToken") ?? undefined;
   return setContext((_, { headers }) => {
     return {
       headers: {

@@ -12,7 +12,7 @@ import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import cookie from "react-cookies";
+import { useCookies } from "react-cookie";
 
 const EDIT_PROFILE = gql`
   mutation EditProfile($name: String!, $password: String!, $about_me: String!) {
@@ -68,6 +68,10 @@ interface EditProfileProps {
 const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
   const router = useRouter();
   const alert = useAlert();
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "accessToken",
+    "accountId",
+  ]);
 
   const { register, handleSubmit } = useForm<EditProfileForm>();
   const [editProfile, { loading: editLoading }] = useMutation<
@@ -152,8 +156,8 @@ const EditProfile: NextPage<EditProfileProps> = ({ user }) => {
     });
   };
   const logout = () => {
-    cookie.remove("accessToken");
-    cookie.remove("accountId");
+    removeCookie("accessToken");
+    removeCookie("accountId");
     router.push("/login");
   };
   const onValid = async (formData: EditProfileForm) => {
