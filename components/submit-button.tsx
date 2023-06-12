@@ -14,14 +14,14 @@ const SubmitButton: NextPage<SubmitButtonProps> = ({
   loading,
   type = "submit",
   onClick,
-  color,
+  color = "violet",
 }) => {
   const buttonColor = (color: "violet" | "red" | "gray") => {
     switch (color) {
       case "violet":
-        return "bg-violet-400 focus:ring-violet-600";
+        return "bg-violet-400 focus:ring-violet-600 text-white";
       case "red":
-        return "bg-rose-600 focus:ring-rose-700";
+        return "bg-rose-600 focus:ring-rose-700 text-white";
       case "gray":
         return "bg-gray-200 focus:ring-gray-400 text-black";
     }
@@ -32,8 +32,8 @@ const SubmitButton: NextPage<SubmitButtonProps> = ({
       type={type}
       onClick={onClick}
       className={cls(
-        "px-4 py-2 text-white rounded-md outline-none focus:ring-2 ",
-        color ? buttonColor(color) : "bg-violet-400 focus:ring-violet-600"
+        "px-4 py-2 rounded-md outline-none focus:ring-2 ",
+        buttonColor(color)
       )}
     >
       {loading ? "로딩 중..." : text}
