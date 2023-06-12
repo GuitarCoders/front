@@ -3,14 +3,17 @@ import EmptyState from "@components/empty-state";
 import FriendRequested from "@components/friend-requested";
 import Layout from "@components/layout";
 import SkFriendRequested from "@components/skeletons/sk-friend-requested";
+import { User } from "hooks/useUser";
 
 const GET_SENT_FRIEND_REQUESTS = gql`
   query getSentFriendRequests {
     getSentFriendRequests {
       friendRequests {
         _id
-        requestUserId
-        receiveUserId
+        receiveUser {
+          name
+          account_id
+        }
         requestMessage
         createdAt
       }
@@ -22,7 +25,8 @@ interface GSFResponse {
   getSentFriendRequests: {
     friendRequests: {
       _id: string;
-      receiveUserId: string;
+      requestUser: User;
+      receiveUser: User;
       requestMessage: string;
       createdAt: string;
     }[];
@@ -48,8 +52,8 @@ const Sent = () => {
               key={request._id}
               refetchList={refetch}
               friendRequestId={request._id}
-              name={request.receiveUserId}
-              accountId={request.receiveUserId}
+              name={request.receiveUser.name}
+              accountId={request.receiveUser.account_id}
               message={request.requestMessage}
               showCancel
             />

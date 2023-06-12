@@ -24,10 +24,6 @@ const CREATE_FRIEND_REQUEST = gql`
     ) {
       _id
       success
-      requestUserId
-      receiveUserId
-      requestMessage
-      createdAt
     }
   }
 `;
@@ -36,15 +32,24 @@ interface RequestForm {
   requestMessage: string;
 }
 
+interface CreateRequestResponse {
+  createFriendRequest: {
+    success: boolean;
+  };
+}
+
 interface NewFriendProps {
   receiveUserId: string;
   receiveUserName: string;
 }
 
 const NewFriend = ({ receiveUserId, receiveUserName }: NewFriendProps) => {
+  console.log(receiveUserId);
   const router = useRouter();
   const alert = useAlert();
-  const [createRequest, { loading }] = useMutation(CREATE_FRIEND_REQUEST);
+  const [createRequest, { loading }] = useMutation<CreateRequestResponse>(
+    CREATE_FRIEND_REQUEST
+  );
   const { register, handleSubmit } = useForm<RequestForm>();
 
   const onValid = async ({ requestMessage }: RequestForm) => {
@@ -52,8 +57,9 @@ const NewFriend = ({ receiveUserId, receiveUserName }: NewFriendProps) => {
     const variables = { requestMessage, receiveUserId };
     try {
       const result = await createRequest({ variables });
-      console.log(result);
-      alertSentRequest();
+      if (result.data?.createFriendRequest.success) {
+        alertSentRequest();
+      }
     } catch (error) {
       console.error(error);
       alertError();

@@ -149,7 +149,6 @@ const FriendRequested: React.FC<FriendRequestedProps> = ({
 
   // 친구 신청 수락 데이터의 success 값이 바뀌면 성공했다는 알림을 표시합니다.
   useEffect(() => {
-    console.log("acceptData changed", acceptData);
     if (acceptData?.acceptFriendRequest?.success) {
       alertAcceptSuccess();
     }
@@ -157,7 +156,6 @@ const FriendRequested: React.FC<FriendRequestedProps> = ({
 
   // 친구 신청 삭제 데이터의 success 값이 바뀌면 성공했다는 알림을 표시합니다.
   useEffect(() => {
-    console.log("deleteData changed", deleteData);
     if (deleteData?.deleteFriendRequest?.success) {
       alertDeleteSuccess();
     }
@@ -173,7 +171,10 @@ const FriendRequested: React.FC<FriendRequestedProps> = ({
               {name.length > 15 ? name.slice(0, 15) + "..." : name}
             </h4>
             <h5 className="text-sm text-gray-500">
-              @{accountId.length > 15 ? name.slice(0, 15) + "..." : name}
+              @
+              {accountId.length > 15
+                ? accountId.slice(0, 15) + "..."
+                : accountId}
             </h5>
           </div>
         </div>

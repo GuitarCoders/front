@@ -3,14 +3,17 @@ import EmptyState from "@components/empty-state";
 import FriendRequested from "@components/friend-requested";
 import Layout from "@components/layout";
 import SkFriendRequested from "@components/skeletons/sk-friend-requested";
+import { User } from "hooks/useUser";
 
 const GET_RECEIVE_FRIEND_REQUESTS = gql`
   query getReceiveFriendRequests {
     getReceiveFriendRequests {
       friendRequests {
         _id
-        requestUserId
-        receiveUserId
+        requestUser {
+          name
+          account_id
+        }
         requestMessage
         createdAt
       }
@@ -22,7 +25,8 @@ interface GRFResponse {
   getReceiveFriendRequests: {
     friendRequests: {
       _id: string;
-      requestUserId: string;
+      requestUser: User;
+      receiveUser: User;
       requestMessage: string;
       createdAt: string;
     }[];
@@ -48,8 +52,8 @@ const Received = () => {
               key={request._id}
               refetchList={refetch}
               friendRequestId={request._id}
-              name={request.requestUserId}
-              accountId={request.requestUserId}
+              name={request.requestUser.name}
+              accountId={request.requestUser.account_id}
               message={request.requestMessage}
               showConfirm
               showRefuse
