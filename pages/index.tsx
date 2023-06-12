@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import Layout from "@components/layout";
 import PostPreview from "@components/post-preview";
-import useUser from "hooks/useUser";
 import { GetServerSidePropsContext } from "next";
 import cookies from "next-cookies";
 
