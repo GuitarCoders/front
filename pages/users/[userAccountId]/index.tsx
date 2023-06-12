@@ -1,6 +1,6 @@
 import Layout from "@components/layout";
 import UserTemplate from "@components/user-template";
-import { initializeApollo } from "@libs/apollo-client";
+import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { USER_BY_ACCOUNT_ID } from "graphql/quries";
 import { UserByAccountIdResponse } from "graphql/quries.type";
 import { GetServerSidePropsContext, NextPage } from "next";
@@ -43,9 +43,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       query: USER_BY_ACCOUNT_ID,
       variables: { account_id: userAccountId },
     });
-    return {
+    return addApolloState(apolloClient, {
       props: { profile: userByAccountId, isMe },
-    };
+    });
   } catch {
     return {
       props: { profile: null },

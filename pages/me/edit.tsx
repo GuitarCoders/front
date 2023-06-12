@@ -3,7 +3,7 @@ import Layout from "@components/layout";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import Textarea from "@components/textarea";
-import { initializeApollo } from "@libs/apollo-client";
+import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { USER_BY_ACCOUNT_ID } from "graphql/quries";
 import { UserByAccountIdResponse } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
@@ -222,9 +222,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     variables: { account_id: accountId },
   });
 
-  return {
+  return addApolloState(apolloClient, {
     props: { user: userByAccountId },
-  };
+  });
 }
 
 export default EditProfile;
