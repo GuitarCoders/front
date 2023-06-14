@@ -4,7 +4,7 @@ import Textarea from "@components/textarea";
 
 const NewPost = () => {
   return (
-    <Layout canGoBack>
+    <Layout canGoBack title="새 글 업로드">
       <section className="p-4">
         <form className="flex flex-col gap-3">
           <Textarea placeholder="무슨 일이 일어나고 있나요?" />
