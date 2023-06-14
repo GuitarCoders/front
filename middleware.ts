@@ -6,7 +6,7 @@ import {
 } from "next/server";
 
 export const config = {
-  matcher: "/",
+  matcher: ["/((?!login|sign-up|api|_next/static|_next/image|favicon.ico).*)"],
 };
 
 export function middleware(req: NextRequest, ev: NextFetchEvent) {
@@ -21,6 +21,7 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
     !req.cookies.has("accessToken") &&
     !req.nextUrl.pathname.startsWith("/login")
   ) {
+    console.log("NO TOKEN FOUND, REDIRECT TO LOGIN PAGE.");
     req.nextUrl.pathname = "/login";
     return NextResponse.redirect(req.nextUrl);
   }
