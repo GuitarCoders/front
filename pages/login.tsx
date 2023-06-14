@@ -47,7 +47,7 @@ interface LoginResponse {
 const cookieOptions: CookieSetOptions = {
   path: "/",
   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-  sameSite: "lax",
+  sameSite: "strict",
   httpOnly: process.env.HTTP_ONLY === "true",
 };
 
@@ -87,7 +87,7 @@ const Login = () => {
     if (data && data.login.status) {
       setCookie("accessToken", data.login.jwt_token, cookieOptions);
       setCookie("accountId", data.login.account_id, cookieOptions);
-      router.push("/");
+      router.push("/redirect").then(() => router.reload());
     }
   }, [data, router, setCookie]);
 
