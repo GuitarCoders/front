@@ -44,7 +44,6 @@ interface NewFriendProps {
 }
 
 const NewFriend = ({ receiveUserId, receiveUserName }: NewFriendProps) => {
-  console.log(receiveUserId);
   const router = useRouter();
   const alert = useAlert();
   const [createRequest, { loading }] = useMutation<CreateRequestResponse>(
