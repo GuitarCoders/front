@@ -5,10 +5,11 @@ import { ApolloProvider } from "@apollo/client";
 import AlertDialogComponent from "@components/alert-dialog";
 import { RecoilRoot } from "recoil";
 import { useApollo } from "@libs/apollo-client";
-import { CookiesProvider } from "react-cookie";
+import { CookiesProvider, useCookies } from "react-cookie";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const apolloClient = useApollo(pageProps);
+  const [cookies] = useCookies(["accessToken"]);
+  const apolloClient = useApollo(pageProps, cookies.accessToken);
   return (
     <CookiesProvider>
       <ApolloProvider client={apolloClient}>

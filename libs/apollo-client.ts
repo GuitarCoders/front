@@ -6,13 +6,10 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import Cookies from "universal-cookie";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
-
-const cookies = new Cookies();
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
@@ -21,12 +18,11 @@ const httpLink = createHttpLink({
 });
 
 const createAuthLink = (token?: string) => {
-  const authToken = token ?? cookies.get("accessToken") ?? undefined;
   return setContext((_, { headers }) => {
     return {
       headers: {
         ...headers,
-        authorization: authToken ? `Bearer ${authToken}` : "",
+        authorization: token ? `Bearer ${token}` : "",
       },
     };
   });
@@ -75,8 +71,8 @@ export function addApolloState(
   return pageProps;
 }
 
-export function useApollo(pageProps: any) {
+export function useApollo(pageProps: any, token: string) {
   const state = pageProps[APOLLO_STATE_PROP_NAME];
-  const store = useMemo(() => initializeApollo(state), [state]);
+  const store = useMemo(() => initializeApollo(state, token), [state, token]);
   return store;
 }
