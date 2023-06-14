@@ -49,7 +49,6 @@ const cookieOptions: CookieSetOptions = {
   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
   sameSite: "lax",
   httpOnly: process.env.HTTP_ONLY === "true",
-  secure: true,
 };
 
 const Login = () => {
