@@ -20,7 +20,7 @@ const Redirect = () => {
 
   useEffect(() => {
     if (cookies.accessToken) {
-      router.push("/");
+      router.replace("/");
     } else {
       alertAuth();
     }

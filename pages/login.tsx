@@ -87,7 +87,7 @@ const Login = () => {
     if (data && data.login.status) {
       setCookie("accessToken", data.login.jwt_token, cookieOptions);
       setCookie("accountId", data.login.account_id, cookieOptions);
-      router.push("/redirect").then(() => router.reload());
+      router.replace("/redirect").then(() => router.reload());
     }
   }, [data, router, setCookie]);
 
