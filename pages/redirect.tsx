@@ -27,9 +27,11 @@ const Redirect = () => {
   }, [router, cookies, alertAuth]);
 
   return (
-    <main>
-      <h1>리다이렉트 중...</h1>
-      <p>로그인 권한이 있는지 확인 중이에요!</p>
+    <main className="max-w-2xl mx-auto">
+      <section className="flex flex-col h-screen gap-8 justify-center items-center">
+        <h1 className="text-xl font-bold text-violet-600">로딩 중..</h1>
+        <p>잠시만 기다려주세요!</p>
+      </section>
     </main>
   );
 };
