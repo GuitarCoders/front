@@ -34,7 +34,7 @@ const Layout: NextPage<LayoutProps> = ({
   return (
     <>
       <Head>
-        <title>{title} | 나도하루</title>
+        <title>{title ? `${title} | 나도하루` : "나도하루"}</title>
       </Head>
       <main className="max-w-2xl mx-auto">
         <header className="px-4 h-14 border-b-2 border-violet-600 text-center fixed flex justify-between top-0 max-w-2xl w-full bg-white z-10 shadow-md">
@@ -57,7 +57,7 @@ const Layout: NextPage<LayoutProps> = ({
                 </svg>
               </button>
             ) : null}
-            {title ? (
+            {!profile && title ? (
               <h1 className="text-lg font-bold text-violet-600">{title}</h1>
             ) : null}
             {profile ? (
