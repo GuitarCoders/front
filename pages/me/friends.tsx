@@ -7,7 +7,7 @@ import cookies from "next-cookies";
 import Link from "next/link";
 
 const friendRequestRoutes = [
-  // { link: "/me/sent", title: "보낸 친구 신청" },
+  { link: "/me/sent", title: "보낸 친구 신청" },
   { link: "/me/received", title: "받은 친구 신청" },
 ];
 
