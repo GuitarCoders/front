@@ -2,6 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import EmptyState from "@components/empty-state";
 import FriendRequested from "@components/friend-requested";
 import Layout from "@components/layout";
+import PullToRefresh from "@components/pull-to-refresh";
 import SkFriendRequested from "@components/skeletons/sk-friend-requested";
 import { User } from "hooks/useUser";
 
@@ -40,28 +41,30 @@ const Sent = () => {
   const friendRequests = data?.getSentFriendRequests.friendRequests;
   return (
     <Layout canGoBack title="보낸 친구 신청">
-      {loading
-        ? Array.from({ length: 3 }, (_, i) => i).map((i) => (
-            <SkFriendRequested key={i} />
-          ))
-        : null}
-      {friendRequests && friendRequests.length > 0 ? (
-        <section className="flex flex-col divide-y">
-          {friendRequests.map((request) => (
-            <FriendRequested
-              key={request._id}
-              refetchList={refetch}
-              friendRequestId={request._id}
-              name={request.receiveUser.name}
-              accountId={request.receiveUser.account_id}
-              message={request.requestMessage}
-              showCancel
-            />
-          ))}
-        </section>
-      ) : (
-        <EmptyState text="보낸 친구 신청 목록이 비었어요!" />
-      )}
+      <PullToRefresh onRefresh={refetch}>
+        {loading
+          ? Array.from({ length: 3 }, (_, i) => i).map((i) => (
+              <SkFriendRequested key={i} />
+            ))
+          : null}
+        {friendRequests && friendRequests.length > 0 ? (
+          <section className="flex flex-col divide-y">
+            {friendRequests.map((request) => (
+              <FriendRequested
+                key={request._id}
+                refetchList={refetch}
+                friendRequestId={request._id}
+                name={request.receiveUser.name}
+                accountId={request.receiveUser.account_id}
+                message={request.requestMessage}
+                showCancel
+              />
+            ))}
+          </section>
+        ) : (
+          <EmptyState text="보낸 친구 신청 목록이 비었어요!" />
+        )}
+      </PullToRefresh>
     </Layout>
   );
 };
