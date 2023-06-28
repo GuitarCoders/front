@@ -4,6 +4,7 @@ import PullToRefresh from "@components/pull-to-refresh";
 import { gql, useQuery } from "@apollo/client";
 import { User } from "hooks/useUser";
 import SkPostPreview from "@components/skeletons/sk-post-preview";
+import EmptyStateFooter from "@components/empty-state-has-footer";
 
 const GET_POSTS = gql`
   query GetPosts($count: Int!, $filter: filter) {
@@ -50,7 +51,7 @@ interface GetPostsResponse {
 }
 
 export default function Timeline() {
-  const { data, refetch } = useQuery<GetPostsResponse, GetPostsForm>(
+  const { data, loading, refetch } = useQuery<GetPostsResponse, GetPostsForm>(
     GET_POSTS,
     {
       variables: { count: 20, filter: undefined },
@@ -58,7 +59,7 @@ export default function Timeline() {
   );
   return (
     <Layout title="모아보는" showNewPostBtn>
-      {data ? (
+      {!loading ? (
         <PullToRefresh onRefresh={refetch}>
           <section>
             {data?.getPosts.posts.map((post) => (
@@ -77,6 +78,9 @@ export default function Timeline() {
           <SkPostPreview key={i} />
         ))
       )}
+      {data === undefined ? (
+        <EmptyStateFooter text="타임라인이 텅 비었어요" />
+      ) : null}
     </Layout>
   );
 }
