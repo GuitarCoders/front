@@ -1,35 +1,82 @@
-import { useRouter } from "next/router";
 import Layout from "@components/layout";
 import PostPreview from "@components/post-preview";
-import { GetServerSidePropsContext } from "next";
-import cookies from "next-cookies";
 import PullToRefresh from "@components/pull-to-refresh";
+import { gql, useQuery } from "@apollo/client";
+import { User } from "hooks/useUser";
+import SkPostPreview from "@components/skeletons/sk-post-preview";
 
-interface TimelineProps {
-  accountId?: string;
+const GET_POSTS = gql`
+  query GetPosts($count: Int!, $filter: filter) {
+    getPosts(getPostsData: { count: $count, filter: $filter }) {
+      posts {
+        _id
+        author {
+          _id
+          name
+        }
+        content
+        tags
+        category
+        createdAt
+      }
+      lastDateTime
+    }
+  }
+`;
+
+interface Filter {
+  userId?: string;
+  category?: string;
+  before?: string;
 }
 
-export default function Timeline({ accountId }: TimelineProps) {
-  const { push } = useRouter();
-  const pushToNewPage = () => push("/new");
-  const refetch = () => console.log("refreshing...");
+interface GetPostsForm {
+  count: number;
+  filter?: Filter;
+}
 
+interface GetPostsResponse {
+  getPosts: {
+    posts: {
+      _id: string;
+      author: User;
+      content: string;
+      tags: string;
+      category: string;
+      createdAt: string;
+    }[];
+    lastDateTime: string;
+  };
+}
+
+export default function Timeline() {
+  const { data, refetch } = useQuery<GetPostsResponse, GetPostsForm>(
+    GET_POSTS,
+    {
+      variables: { count: 20, filter: undefined },
+    }
+  );
   return (
     <Layout title="모아보는" showNewPostBtn>
-      <PullToRefresh onRefresh={refetch}>
-        <section className="divide-y">
-          {Array.from({ length: 10 }, (_, i) => i).map((i) => (
-            <PostPreview key={i} />
-          ))}
-        </section>
-      </PullToRefresh>
+      {data ? (
+        <PullToRefresh onRefresh={refetch}>
+          <section>
+            {data?.getPosts.posts.map((post) => (
+              <PostPreview
+                key={post._id}
+                author={post.author}
+                content={post.content}
+                tags={post.tags}
+                createdAt={post.createdAt}
+              />
+            ))}
+          </section>
+        </PullToRefresh>
+      ) : (
+        Array.from({ length: 3 }, (_, i) => i).map((i) => (
+          <SkPostPreview key={i} />
+        ))
+      )}
     </Layout>
   );
-}
-
-export function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const { accountId } = cookies(ctx);
-  return {
-    props: { accountId },
-  };
 }
