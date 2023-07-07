@@ -14,10 +14,10 @@ export function timeDifference(current: number, previous: number) {
   } else if (elapsed < msPerDay) {
     return Math.round(elapsed / msPerHour) + "시간 전";
   } else if (elapsed < msPerMonth) {
-    return "approximately " + Math.round(elapsed / msPerDay) + "일 전";
+    return Math.round(elapsed / msPerDay) + "일 전";
   } else if (elapsed < msPerYear) {
-    return "approximately " + Math.round(elapsed / msPerMonth) + "개월 전";
+    return Math.round(elapsed / msPerMonth) + "개월 전";
   } else {
-    return "approximately " + Math.round(elapsed / msPerYear) + "년 전";
+    return Math.round(elapsed / msPerYear) + "년 전";
   }
 }
