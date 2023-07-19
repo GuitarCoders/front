@@ -8,6 +8,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -28,11 +29,38 @@ const createAuthLink = (token?: string) => {
   });
 };
 
+// const cache = new InMemoryCache();
+type Args = {
+  offset: number;
+};
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        getPosts: {
+          keyArgs: false,
+          merge(existing, incoming) {
+            if (!existing) {
+              return incoming;
+            }
+            return {
+              ...existing,
+              ...incoming,
+              posts: [...existing.posts, ...incoming.posts],
+            };
+          },
+        },
+      },
+    },
+  },
+});
+
 function createApolloClient(token?: string) {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: createAuthLink(token).concat(httpLink),
-    cache: new InMemoryCache(),
+    cache,
   });
 }
 
