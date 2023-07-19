@@ -59,15 +59,21 @@ export default function Timeline() {
     });
   }
 
-  const { data, loading, fetchMore } = useQuery<GetPostsResponse, GetPostsForm>(
-    GET_POSTS,
-    {
-      variables: { count: 5, filter: undefined },
-    }
-  );
+  const { data, loading, fetchMore, refetch } = useQuery<
+    GetPostsResponse,
+    GetPostsForm
+  >(GET_POSTS, {
+    variables: { count: 5, filter: undefined },
+  });
 
   return (
     <Layout title="모아보는" showNewPostBtn>
+      <button
+        onClick={() => refetch()}
+        className="border flex mx-auto p-2 rounded-lg text-gray-400"
+      >
+        ⬆ 임시 새 글 불러오기 버튼 ⬆
+      </button>
       {!loading ? (
         <InfiniteScroll
           dataLength={data?.getPosts.posts.length ?? 20}
