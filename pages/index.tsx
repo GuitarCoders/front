@@ -1,10 +1,10 @@
 import Layout from "@components/layout";
 import PostPreview from "@components/post-preview";
-import PullToRefresh from "@components/pull-to-refresh";
 import { gql, useQuery } from "@apollo/client";
 import { User } from "hooks/useUser";
 import SkPostPreview from "@components/skeletons/sk-post-preview";
 import EmptyStateFooter from "@components/empty-state-has-footer";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const GET_POSTS = gql`
   query GetPosts($count: Int!, $filter: filter) {
@@ -51,18 +51,32 @@ interface GetPostsResponse {
 }
 
 export default function Timeline() {
-  const { data, loading, refetch } = useQuery<GetPostsResponse, GetPostsForm>(
+  function fetchNext() {
+    fetchMore({
+      variables: {
+        filter: { before: data?.getPosts.lastDateTime },
+      },
+    });
+  }
+
+  const { data, loading, fetchMore } = useQuery<GetPostsResponse, GetPostsForm>(
     GET_POSTS,
     {
-      variables: { count: 20, filter: undefined },
+      variables: { count: 5, filter: undefined },
     }
   );
+
   return (
     <Layout title="모아보는" showNewPostBtn>
       {!loading ? (
-        <PullToRefresh onRefresh={refetch}>
+        <InfiniteScroll
+          dataLength={data?.getPosts.posts.length ?? 20}
+          next={fetchNext}
+          loader={<h4>Loading...</h4>}
+          hasMore={true}
+        >
           <section>
-            {data?.getPosts.posts.map((post) => (
+            {data?.getPosts.posts?.map((post) => (
               <PostPreview
                 key={post._id}
                 author={post.author}
@@ -72,13 +86,13 @@ export default function Timeline() {
               />
             ))}
           </section>
-        </PullToRefresh>
+        </InfiniteScroll>
       ) : (
         Array.from({ length: 3 }, (_, i) => i).map((i) => (
           <SkPostPreview key={i} />
         ))
       )}
-      {data === undefined ? (
+      {!loading && !data ? (
         <EmptyStateFooter text="타임라인이 텅 비었어요" />
       ) : null}
     </Layout>
