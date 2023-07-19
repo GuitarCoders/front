@@ -46,7 +46,6 @@ const NewPost = () => {
     const variables = { ...form, category: "" };
     try {
       const result = await post({ variables });
-      console.log("post result", result);
       if (result.errors) {
         showError();
       } else {
