@@ -24,7 +24,6 @@ const GET_LOGIN = gql`
       email
       account_id
       about_me
-      friends
       status
       jwt_token
     }
