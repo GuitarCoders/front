@@ -72,7 +72,7 @@ export default function Timeline() {
         <InfiniteScroll
           dataLength={data?.getPosts.posts.length ?? 20}
           next={fetchNext}
-          loader={<h4>Loading...</h4>}
+          loader={<SkPostPreview />}
           hasMore={true}
         >
           <section>
