@@ -8,7 +8,7 @@ const ChatDetail = () => {
     id: "my_nickname",
   };
   return (
-    <Layout canGoBack profile={profile}>
+    <Layout canGoBack profile={profile} title="DM">
       <section className="px-4 py-6 flex flex-col gap-4">
         <ChatBubble message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, ipsam." />
         <ChatBubble message="Lorem ipsum." reversed />

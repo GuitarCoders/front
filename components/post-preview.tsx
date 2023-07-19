@@ -1,32 +1,42 @@
+import { timeDifference } from "@libs/time-difference";
+import { User } from "hooks/useUser";
+import { NextPage } from "next";
 import Link from "next/link";
 
-const PostPreview = () => {
+interface PostPreviewProps {
+  author: User;
+  content: string;
+  tags: string;
+  createdAt: string;
+}
+
+const PostPreview: NextPage<PostPreviewProps> = ({
+  author,
+  content,
+  tags,
+  createdAt,
+}) => {
+  const postTime = new Date(createdAt).getTime();
+  const now = Date.now();
   return (
     <Link href="/posts/1">
       <div className="w-full p-4 text-left flex flex-col gap-3">
         {/* 프로필 */}
         <section className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-300 shrink-0 rounded-md" />
+            <div className="w-10 h-10 bg-gray-200 shrink-0 rounded-md" />
             <div className="flex flex-col">
-              <h2 className="font-semibold text-sm">민나노아이도루</h2>
+              <h2 className="font-semibold text-sm">{author.name}</h2>
             </div>
           </div>
-          <p className="text-sm text-gray-400">1분 전</p>
+          <p className="text-sm text-gray-400">
+            {timeDifference(now, postTime)}
+          </p>
         </section>
 
         {/* 본문 & 태그 */}
-        <p className="text-sm">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quae aliquam
-          soluta quas reiciendis saepe corporis dolorem veritatis architecto
-          repellat ullam quo pariatur, voluptate nulla tempore libero beatae,
-          rerum modi a assumenda fugit molestiae.
-        </p>
-        <p className="text-sm text-gray-400 font-light">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magni
-          voluptatum vitae cupiditate. Iste delectus autem ex maxime doloremque
-          voluptatum recusandae?
-        </p>
+        <p className="text-sm">{content}</p>
+        <p className="text-sm text-gray-400 font-light">{tags}</p>
 
         {/* 버튼부 */}
         <div className="flex gap-2 self-end mt-4 text-slate-600">

@@ -24,7 +24,6 @@ const GET_LOGIN = gql`
       email
       account_id
       about_me
-      friends
       status
       jwt_token
     }
@@ -47,9 +46,8 @@ interface LoginResponse {
 const cookieOptions: CookieSetOptions = {
   path: "/",
   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-  sameSite: "lax",
+  sameSite: "strict",
   httpOnly: process.env.HTTP_ONLY === "true",
-  secure: true,
 };
 
 const Login = () => {
@@ -88,7 +86,7 @@ const Login = () => {
     if (data && data.login.status) {
       setCookie("accessToken", data.login.jwt_token, cookieOptions);
       setCookie("accountId", data.login.account_id, cookieOptions);
-      router.push("/");
+      router.replace("/redirect").then(() => router.reload());
     }
   }, [data, router, setCookie]);
 

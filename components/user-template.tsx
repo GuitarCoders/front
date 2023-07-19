@@ -2,19 +2,38 @@ import { NextPage } from "next";
 import PostPreview from "./post-preview";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { UserState } from "hooks/useUser";
+import { User, UserState } from "hooks/useUser";
+import SkPostPreview from "./skeletons/sk-post-preview";
+
+interface GetPostsResponse {
+  getPosts: {
+    posts: {
+      _id: string;
+      author: User;
+      content: string;
+      tags: string;
+      category: string;
+      createdAt: string;
+    }[];
+    lastDateTime: string;
+  };
+}
 
 interface UserTemplateProps {
   isMe?: boolean;
   isFriend?: boolean;
   profile: UserState;
   loading?: boolean;
+  data?: GetPostsResponse;
+  dataLoading: boolean;
 }
 
 const UserTemplate: NextPage<UserTemplateProps> = ({
   isMe,
   isFriend,
   profile,
+  data,
+  dataLoading,
 }) => {
   const router = useRouter();
 
@@ -119,9 +138,19 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
           ))}
         </div>
         <div className="divide-y">
-          {Array.from({ length: 10 }, (_, i) => i).map((i) => (
-            <PostPreview key={i} />
-          ))}
+          {!dataLoading
+            ? data?.getPosts.posts.map((post) => (
+                <PostPreview
+                  key={post._id}
+                  author={post.author}
+                  content={post.content}
+                  createdAt={post.createdAt}
+                  tags={post.tags}
+                />
+              ))
+            : Array.from({ length: 3 }, (_, i) => i).map((i) => (
+                <SkPostPreview key={i} />
+              ))}
         </div>
       </section>
     </>
