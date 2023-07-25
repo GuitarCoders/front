@@ -5,9 +5,11 @@ import { User } from "hooks/useUser";
 import SkPostPreview from "@components/skeletons/sk-post-preview";
 import EmptyStateFooter from "@components/empty-state-has-footer";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useEffect } from "react";
+import useAlert from "hooks/useAlert";
 
 const GET_POSTS = gql`
-  query GetPosts($count: Int!, $filter: filter) {
+  query GetPosts($count: Int!, $filter: getPostFilter) {
     getPosts(getPostsData: { count: $count, filter: $filter }) {
       posts {
         _id
@@ -59,12 +61,20 @@ export default function Timeline() {
     });
   }
 
-  const { data, loading, fetchMore, refetch } = useQuery<
+  const alert = useAlert();
+  const { data, loading, fetchMore, refetch, error } = useQuery<
     GetPostsResponse,
     GetPostsForm
   >(GET_POSTS, {
     variables: { count: 5, filter: undefined },
   });
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+      alert({ visible: true, title: error.name, description: error.message });
+    }
+  }, [error, alert]);
 
   return (
     <Layout title="모아보는" showNewPostBtn>
