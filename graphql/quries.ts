@@ -7,8 +7,8 @@ export const USER_BY_ACCOUNT_ID = gql`
       name
       email
       account_id
+      # friends
       about_me
-      friends
     }
   }
 `;

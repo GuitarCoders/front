@@ -28,7 +28,7 @@ const SIGN_UP = gql`
       email
       account_id
       about_me
-      friends
+      # friends
     }
   }
 `;
