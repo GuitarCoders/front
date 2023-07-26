@@ -2,7 +2,12 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import ChatInput from "@components/chat-input";
 import Comment from "@components/comment";
 import Layout from "@components/layout";
+import { addApolloState, initializeApollo } from "@libs/apollo-client";
+import { GET_POST } from "graphql/quries";
+import { GetPostResponse } from "graphql/quries.type";
 import { User } from "hooks/useUser";
+import { GetServerSidePropsContext, NextPage } from "next";
+import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
@@ -66,7 +71,18 @@ interface GetCommentsResponse {
   };
 }
 
-const PostDetail = () => {
+interface PostDetailProps {
+  post: {
+    _id: string;
+    content: string;
+    tags: string;
+    category: string;
+    createdAt: string;
+    author: User;
+  };
+}
+
+const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
   const router = useRouter();
   const postId = String(router.query.postId);
   const { register, handleSubmit, setValue } = useForm<{ comment: string }>();
@@ -103,37 +119,25 @@ const PostDetail = () => {
     }
   };
 
-  const profile = {
-    id: "my_nickname",
-    name: "닉네임",
-  };
   return (
-    <Layout canGoBack profile={profile}>
+    <Layout canGoBack profile={post.author}>
       <section className="divide-y pb-16">
         {/* 본문 */}
         <div className="flex flex-col p-4 gap-2 text-sm shadow-md">
-          <h5 className="">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            omnis culpa eos minus voluptatem, tempora beatae nemo, ab
-            consequatur rem neque quidem recusandae cum sit eligendi voluptate
-            praesentium? Dicta tempora sunt minus sit natus! Eveniet maiores
-            debitis eaque doloremque eius.
-          </h5>
-          <p className="text-gray-600 font-light">
-            Lorem ipsum dolor sit amet.
-          </p>
+          <h5>{post.content}</h5>
+          <p className="text-gray-600 font-light">{post.tags}</p>
           <div className="flex justify-between pt-6 items-center">
             <div>
-              {/* <p className="text-xs text-gray-600 font-light">
-                {new Date().toLocaleString("ko", {
+              <p className="text-xs text-gray-600 font-light">
+                {new Date(post.createdAt).toLocaleString("ko", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  second: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
                 })}
-              </p> */}
+              </p>
             </div>
             <div className="flex gap-4 items-center">
               <div className="flex items-center gap-2">
@@ -204,20 +208,6 @@ const PostDetail = () => {
                 key={comment._id}
               />
             ))}
-            {/* <Comment
-              username="냠냠"
-              comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
-                  beatae quos vero itaque enim dolores cupiditate et expedita
-                  hic, quaerat dolore ea. Tempora ducimus provident iure
-                  explicabo cumque ea iste, aliquid facilis ullam ipsam odio,
-                  nam, ad inventore. Sit, veniam cumque est veritatis quis,
-                  commodi recusandae iure nobis nostrum, fuga laborum odio modi
-                  eum expedita doloribus culpa. Velit, enim cum."
-            />
-            <Comment
-              username="프로필네임"
-              comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit fuga cumque pariatur eos, aliquam quidem sit omnis earum suscipit ipsum."
-            /> */}
           </div>
         </div>
       </section>
@@ -231,5 +221,27 @@ const PostDetail = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const { accessToken } = cookies(ctx);
+  const apolloClient = initializeApollo(null, accessToken);
+  const postId = ctx.params?.postId;
+  try {
+    const {
+      data: { getPost },
+    } = await apolloClient.query<GetPostResponse>({
+      query: GET_POST,
+      variables: { postId },
+    });
+    return addApolloState(apolloClient, {
+      props: { post: getPost },
+    });
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {},
+    };
+  }
+}
 
 export default PostDetail;
