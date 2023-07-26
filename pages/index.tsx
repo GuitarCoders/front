@@ -95,6 +95,7 @@ export default function Timeline() {
             {data?.getPosts.posts?.map((post) => (
               <PostPreview
                 key={post._id}
+                postId={post._id}
                 author={post.author}
                 content={post.content}
                 tags={post.tags}
