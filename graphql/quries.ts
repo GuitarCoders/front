@@ -12,3 +12,20 @@ export const USER_BY_ACCOUNT_ID = gql`
     }
   }
 `;
+
+export const GET_POST = gql`
+  query GetPost($postId: String!) {
+    getPost(postId: $postId) {
+      _id
+      author {
+        _id
+        name
+        account_id
+      }
+      content
+      tags
+      category
+      createdAt
+    }
+  }
+`;
