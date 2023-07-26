@@ -29,11 +29,6 @@ const createAuthLink = (token?: string) => {
   });
 };
 
-// const cache = new InMemoryCache();
-type Args = {
-  offset: number;
-};
-
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
