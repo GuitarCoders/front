@@ -1,8 +1,108 @@
+import { gql, useMutation, useQuery } from "@apollo/client";
 import ChatInput from "@components/chat-input";
 import Comment from "@components/comment";
 import Layout from "@components/layout";
+import { User } from "hooks/useUser";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+
+const GET_COMMENTS = gql`
+  query GetComments($postId: String!, $filter: commentFilter!) {
+    getCommentByPostId(postId: $postId, filter: $filter) {
+      comments {
+        _id
+        content
+        postId
+        Commenter {
+          _id
+          name
+        }
+        createdAt
+      }
+      lastDateTime
+    }
+  }
+`;
+
+const ADD_COMMENT = gql`
+  mutation AddCommentToPost($targetPostId: String!, $content: String!) {
+    addCommentToPost(targetPostId: $targetPostId, content: $content) {
+      _id
+    }
+  }
+`;
+
+interface Filter {
+  skip?: number;
+  limit: number;
+}
+
+interface GetCommentsForm {
+  postId: string;
+  filter: Filter;
+}
+
+interface AddCommentForm {
+  targetPostId: string;
+  content: string;
+}
+
+interface AddCommentResponse {
+  addCommentToPost: {
+    _id: string;
+  };
+}
+
+interface GetCommentsResponse {
+  getCommentByPostId: {
+    comments: {
+      _id: string;
+      content: string;
+      postId: string;
+      Commenter: User;
+      createdAt: string;
+    }[];
+    lastDateTime: string;
+  };
+}
 
 const PostDetail = () => {
+  const router = useRouter();
+  const postId = String(router.query.postId);
+  const { register, handleSubmit, setValue } = useForm<{ comment: string }>();
+  const {
+    data: commentsData,
+    error: commentsError,
+    refetch: refetchComments,
+  } = useQuery<GetCommentsResponse, GetCommentsForm>(GET_COMMENTS, {
+    variables: {
+      postId,
+      filter: { skip: 0, limit: 20 },
+    },
+  });
+
+  const [addComment, { loading: addCommentLoading }] = useMutation<
+    AddCommentResponse,
+    AddCommentForm
+  >(ADD_COMMENT);
+
+  const onValid = async (formData: { comment: string }) => {
+    if (addCommentLoading) {
+      return;
+    }
+    try {
+      const result = await addComment({
+        variables: { content: formData.comment, targetPostId: postId },
+      });
+      if (result) {
+        setValue("comment", "");
+        refetchComments();
+      }
+    } catch {
+      console.error;
+    }
+  };
+
   const profile = {
     id: "my_nickname",
     name: "닉네임",
@@ -24,7 +124,7 @@ const PostDetail = () => {
           </p>
           <div className="flex justify-between pt-6 items-center">
             <div>
-              <p className="text-xs text-gray-600 font-light">
+              {/* <p className="text-xs text-gray-600 font-light">
                 {new Date().toLocaleString("ko", {
                   year: "numeric",
                   month: "long",
@@ -33,7 +133,7 @@ const PostDetail = () => {
                   minute: "numeric",
                   second: "numeric",
                 })}
-              </p>
+              </p> */}
             </div>
             <div className="flex gap-4 items-center">
               <div className="flex items-center gap-2">
@@ -97,7 +197,14 @@ const PostDetail = () => {
 
           {/* 댓글 */}
           <div>
-            <Comment
+            {commentsData?.getCommentByPostId.comments.map((comment) => (
+              <Comment
+                username={comment.Commenter.name}
+                comment={comment.content}
+                key={comment._id}
+              />
+            ))}
+            {/* <Comment
               username="냠냠"
               comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
                   beatae quos vero itaque enim dolores cupiditate et expedita
@@ -110,12 +217,17 @@ const PostDetail = () => {
             <Comment
               username="프로필네임"
               comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit fuga cumque pariatur eos, aliquam quidem sit omnis earum suscipit ipsum."
-            />
+            /> */}
           </div>
         </div>
       </section>
 
-      <ChatInput placeholder="댓글 입력.." />
+      <form onSubmit={handleSubmit(onValid)}>
+        <ChatInput
+          placeholder="댓글 입력.."
+          register={register("comment", { required: true })}
+        />
+      </form>
     </Layout>
   );
 };
