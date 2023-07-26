@@ -23,6 +23,7 @@ const GET_POSTS = gql`
         createdAt
       }
       lastDateTime
+      hasNext
     }
   }
 `;
@@ -49,6 +50,7 @@ interface GetPostsResponse {
       createdAt: string;
     }[];
     lastDateTime: string;
+    hasNext: boolean;
   };
 }
 
@@ -76,6 +78,8 @@ export default function Timeline() {
     }
   }, [error, alert]);
 
+  console.log(data);
+
   return (
     <Layout title="모아보는" showNewPostBtn>
       <button
@@ -89,7 +93,7 @@ export default function Timeline() {
           dataLength={data?.getPosts.posts.length ?? 20}
           next={fetchNext}
           loader={<SkPostPreview />}
-          hasMore={true}
+          hasMore={data?.getPosts.hasNext!}
         >
           <section>
             {data?.getPosts.posts?.map((post) => (
