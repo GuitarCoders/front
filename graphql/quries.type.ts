@@ -5,3 +5,14 @@ export interface UserByAccountIdResponse {
     __typename: "User";
   } & User;
 }
+
+export interface GetPostResponse {
+  getPost: {
+    _id: string;
+    content: string;
+    tags: string;
+    category: string;
+    createdAt: string;
+    author: User;
+  };
+}
