@@ -5,17 +5,12 @@ import { cls } from "@libs/cls";
 import FooterItem from "@components/footer-item";
 import Link from "next/link";
 import Head from "next/head";
-
-interface Profile {
-  avatar?: string;
-  name: string;
-  id: string;
-}
+import { User } from "hooks/useUser";
 
 interface LayoutProps {
   title?: string;
   canGoBack?: boolean;
-  profile?: Profile;
+  profile?: User;
   children: ReactNode | ReactNode[];
   showNewPostBtn?: boolean;
   showNewChatBtn?: boolean;
@@ -64,8 +59,8 @@ const Layout: NextPage<LayoutProps> = ({
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gray-300 rounded-md" />
                 <div className="flex flex-col items-start">
-                  <h3 className="font-semibold text-sm">닉네임</h3>
-                  <p className="text-gray-400 text-xs">my_nickname</p>
+                  <h3 className="font-semibold text-sm">{profile.name}</h3>
+                  <p className="text-gray-400 text-xs">@{profile.account_id}</p>
                 </div>
               </div>
             ) : null}
