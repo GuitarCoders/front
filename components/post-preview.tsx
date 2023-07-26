@@ -8,6 +8,7 @@ interface PostPreviewProps {
   content: string;
   tags: string;
   createdAt: string;
+  postId: string;
 }
 
 const PostPreview: NextPage<PostPreviewProps> = ({
@@ -15,11 +16,12 @@ const PostPreview: NextPage<PostPreviewProps> = ({
   content,
   tags,
   createdAt,
+  postId,
 }) => {
   const postTime = new Date(createdAt).getTime();
   const now = Date.now();
   return (
-    <Link href="/posts/1">
+    <Link href={`/posts/${postId}`}>
       <div className="w-full p-4 text-left flex flex-col gap-3">
         {/* 프로필 */}
         <section className="flex justify-between items-center">
