@@ -5,8 +5,9 @@ import { User } from "hooks/useUser";
 import SkPostPreview from "@components/skeletons/sk-post-preview";
 import EmptyStateFooter from "@components/empty-state-has-footer";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useAlert from "hooks/useAlert";
+import { AnimatePresence, motion } from "framer-motion";
 
 const GET_POSTS = gql`
   query GetPosts($count: Int!, $filter: getPostFilter) {
@@ -64,12 +65,29 @@ export default function Timeline() {
   }
 
   const alert = useAlert();
+  const [showBtn, setShowBtn] = useState(false);
   const { data, loading, fetchMore, refetch, error } = useQuery<
     GetPostsResponse,
     GetPostsForm
   >(GET_POSTS, {
     variables: { count: 5, filter: undefined },
   });
+
+  function onRefetchClick() {
+    refetch();
+    scrollTo(0, 0);
+    setShowBtn(false);
+  }
+
+  useEffect(() => {
+    function toggleBtn() {
+      setShowBtn(true);
+    }
+    const timer = setTimeout(toggleBtn, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [showBtn]);
 
   useEffect(() => {
     if (error) {
@@ -78,16 +96,34 @@ export default function Timeline() {
     }
   }, [error, alert]);
 
-  console.log(data);
-
   return (
     <Layout title="모아보는" showNewPostBtn>
-      <button
-        onClick={() => refetch()}
-        className="border flex mx-auto p-2 rounded-lg text-gray-400"
-      >
-        ⬆ 임시 새 글 불러오기 버튼 ⬆
-      </button>
+      <AnimatePresence>
+        {showBtn ? (
+          <motion.button
+            initial={{ y: -200 }}
+            animate={{ y: 0 }}
+            exit={{ y: -200 }}
+            onClick={onRefetchClick}
+            className="flex justify-center items-center mx-auto fixed top-20 left-0 right-0 w-12 h-12 rounded-full text-sm text-white bg-violet-400 shadow-lg"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+              />
+            </svg>
+          </motion.button>
+        ) : null}
+      </AnimatePresence>
       {!loading ? (
         <InfiniteScroll
           dataLength={data?.getPosts.posts.length ?? 20}
