@@ -6,10 +6,12 @@ import AlertDialogComponent from "@components/alert-dialog";
 import { RecoilRoot } from "recoil";
 import { useApollo } from "@libs/apollo-client";
 import { CookiesProvider, useCookies } from "react-cookie";
+import usePreserveScroll from "hooks/usePreserveScroll";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [cookies] = useCookies(["accessToken"]);
   const apolloClient = useApollo(pageProps, cookies.accessToken);
+  usePreserveScroll();
   return (
     <CookiesProvider>
       <ApolloProvider client={apolloClient}>
