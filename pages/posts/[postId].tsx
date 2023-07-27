@@ -24,7 +24,6 @@ const GET_COMMENTS = gql`
         }
         createdAt
       }
-      lastDateTime
     }
   }
 `;
@@ -67,7 +66,6 @@ interface GetCommentsResponse {
       Commenter: User;
       createdAt: string;
     }[];
-    lastDateTime: string;
   };
 }
 
