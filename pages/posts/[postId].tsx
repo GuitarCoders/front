@@ -5,6 +5,7 @@ import Layout from "@components/layout";
 import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { GET_POST } from "graphql/quries";
 import { GetPostResponse } from "graphql/quries.type";
+import useAlert from "hooks/useAlert";
 import { User } from "hooks/useUser";
 import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
@@ -100,6 +101,7 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
     AddCommentForm
   >(ADD_COMMENT);
 
+  const alert = useAlert();
   const onValid = async (formData: { comment: string }) => {
     if (addCommentLoading) {
       return;
@@ -112,8 +114,21 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
         setValue("comment", "");
         refetchComments();
       }
-    } catch {
-      console.error;
+    } catch (error) {
+      console.error(commentsError);
+      if (commentsError) {
+        alert({
+          visible: true,
+          title: commentsError?.name,
+          description: commentsError.message,
+        });
+      } else {
+        alert({
+          visible: true,
+          title: "오류 발생",
+          description: JSON.stringify(error),
+        });
+      }
     }
   };
 
