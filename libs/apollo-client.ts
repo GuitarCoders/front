@@ -8,7 +8,6 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
-import { offsetLimitPagination } from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
