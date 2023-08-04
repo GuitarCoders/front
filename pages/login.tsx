@@ -130,11 +130,11 @@ const Login = () => {
             </Link>
           </p>
         </div>
-        <div className="flex gap-8 pt-8 justify-center">
+        {/* <div className="flex gap-8 pt-8 justify-center">
           <ExternalLoginButton icon="apple" />
           <ExternalLoginButton icon="kakao" />
           <ExternalLoginButton icon="github" />
-        </div>
+        </div> */}
       </main>
     </>
   );
