@@ -1,59 +1,14 @@
 import Layout from "@components/layout";
 import PostPreview from "@components/post-preview";
-import { gql, useQuery } from "@apollo/client";
-import { User } from "hooks/useUser";
+import { useQuery } from "@apollo/client";
 import SkPostPreview from "@components/skeletons/sk-post-preview";
 import EmptyStateFooter from "@components/empty-state-has-footer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect, useState } from "react";
 import useAlert from "hooks/useAlert";
 import { AnimatePresence, motion } from "framer-motion";
-
-const GET_POSTS = gql`
-  query GetPosts($count: Int!, $filter: getPostFilter) {
-    getPosts(getPostsData: { count: $count, filter: $filter }) {
-      posts {
-        _id
-        author {
-          _id
-          name
-        }
-        content
-        tags
-        category
-        createdAt
-      }
-      lastDateTime
-      hasNext
-    }
-  }
-`;
-
-interface Filter {
-  userId?: string;
-  category?: string;
-  before?: string;
-}
-
-interface GetPostsForm {
-  count: number;
-  filter?: Filter;
-}
-
-interface GetPostsResponse {
-  getPosts: {
-    posts: {
-      _id: string;
-      author: User;
-      content: string;
-      tags: string;
-      category: string;
-      createdAt: string;
-    }[];
-    lastDateTime: string;
-    hasNext: boolean;
-  };
-}
+import { GetPostsForm, GetPostsResponse } from "graphql/quries.type";
+import { GET_POSTS } from "graphql/quries";
 
 export default function Timeline() {
   function fetchNext() {
