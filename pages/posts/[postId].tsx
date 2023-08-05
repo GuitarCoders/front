@@ -2,6 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import ChatInput from "@components/chat-input";
 import Comment from "@components/comment";
 import Layout from "@components/layout";
+import SkComment from "@components/skeletons/sk-comment";
 import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { GET_POST } from "graphql/quries";
 import { GetPostResponse } from "graphql/quries.type";
@@ -10,7 +11,9 @@ import { User } from "hooks/useUser";
 import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const GET_COMMENTS = gql`
   query GetComments($postId: String!, $filter: commentFilter!) {
@@ -25,6 +28,7 @@ const GET_COMMENTS = gql`
         }
         createdAt
       }
+      hasNext
     }
   }
 `;
@@ -33,6 +37,13 @@ const ADD_COMMENT = gql`
   mutation AddCommentToPost($targetPostId: String!, $content: String!) {
     addCommentToPost(targetPostId: $targetPostId, content: $content) {
       _id
+      content
+      postId
+      Commenter {
+        _id
+        name
+      }
+      createdAt
     }
   }
 `;
@@ -55,6 +66,10 @@ interface AddCommentForm {
 interface AddCommentResponse {
   addCommentToPost: {
     _id: string;
+    content: string;
+    postId: string;
+    Commenter: User;
+    createdAt: string;
   };
 }
 
@@ -67,6 +82,7 @@ interface GetCommentsResponse {
       Commenter: User;
       createdAt: string;
     }[];
+    hasNext: boolean;
   };
 }
 
@@ -82,17 +98,21 @@ interface PostDetailProps {
 }
 
 const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
+  const limit = 10;
+  const [skip, setSkip] = useState(limit);
   const router = useRouter();
   const postId = String(router.query.postId);
   const { register, handleSubmit, setValue } = useForm<{ comment: string }>();
   const {
     data: commentsData,
+    loading: commentsLoading,
     error: commentsError,
-    refetch: refetchComments,
+    fetchMore: fetchMoreComments,
+    client,
   } = useQuery<GetCommentsResponse, GetCommentsForm>(GET_COMMENTS, {
     variables: {
       postId,
-      filter: { skip: 0, limit: 20 },
+      filter: { skip: 0, limit },
     },
   });
 
@@ -112,7 +132,16 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
       });
       if (result) {
         setValue("comment", "");
-        refetchComments();
+        const data = client.readQuery({ query: GET_COMMENTS });
+        client.writeQuery({
+          query: GET_COMMENTS,
+          data: {
+            getCommentByPostId: {
+              ...data.getCommentByPostId,
+              comments: [result.data?.addCommentToPost],
+            },
+          },
+        });
       }
     } catch (error) {
       console.error(commentsError);
@@ -131,6 +160,15 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
       }
     }
   };
+
+  function fetchNext() {
+    setSkip((prev) => prev + limit);
+    fetchMoreComments({
+      variables: {
+        filter: { skip, limit },
+      },
+    });
+  }
 
   return (
     <Layout canGoBack profile={post.author}>
@@ -213,15 +251,26 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
           </div>
 
           {/* 댓글 */}
-          <div>
-            {commentsData?.getCommentByPostId.comments.map((comment) => (
-              <Comment
-                username={comment.Commenter.name}
-                comment={comment.content}
-                key={comment._id}
-              />
-            ))}
-          </div>
+          {commentsLoading ? (
+            Array.from({ length: 10 }, (_, i) => <SkComment key={i} />)
+          ) : (
+            <InfiniteScroll
+              dataLength={
+                commentsData?.getCommentByPostId.comments.length ?? limit
+              }
+              next={fetchNext}
+              hasMore={commentsData?.getCommentByPostId.hasNext!}
+              loader={<SkComment />}
+            >
+              {commentsData?.getCommentByPostId.comments.map((comment) => (
+                <Comment
+                  username={comment.Commenter.name}
+                  comment={comment.content}
+                  key={comment._id}
+                />
+              ))}
+            </InfiniteScroll>
+          )}
         </div>
       </section>
 

@@ -33,7 +33,7 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         getPosts: {
-          keyArgs: false,
+          keyArgs: ["userId"],
           merge(existing, incoming) {
             if (!existing) {
               return incoming;
@@ -42,6 +42,19 @@ const cache = new InMemoryCache({
               ...existing,
               ...incoming,
               posts: [...existing.posts, ...incoming.posts],
+            };
+          },
+        },
+        getCommentByPostId: {
+          keyArgs: ["postId"],
+          merge(existing, incoming) {
+            if (!existing) {
+              return incoming;
+            }
+            return {
+              ...existing,
+              ...incoming,
+              comments: [...existing.comments, ...incoming.comments],
             };
           },
         },
