@@ -14,7 +14,7 @@ const ChatInput: NextPage<ChatInputProps> = ({ placeholder, register }) => {
           type="text"
           className="w-full border pl-4 pr-14 py-2 rounded-3xl focus:ring-2 ring-violet-400 focus:outline-none"
           placeholder={placeholder}
-          autoCapitalize="off"
+          autoCapitalize="none"
           autoCorrect="off"
           autoSave="off"
           autoFocus
