@@ -16,7 +16,6 @@ interface MyFriendsProps {
 }
 
 const MyFriends: NextPage<MyFriendsProps> = ({ friends }) => {
-  console.log(friends);
   return (
     <Layout canGoBack title="친구">
       <section className="p-4 mb-2 flex flex-col gap-4">
@@ -73,9 +72,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       variables: { account_id: accountId },
     });
 
-    return addApolloState(apolloClient, {
-      props: { friends },
-    });
+    if (friends) {
+      return addApolloState(apolloClient, {
+        props: { friends },
+      });
+    } else {
+      return {
+        props: {},
+      };
+    }
   } catch {
     return {
       props: {},
