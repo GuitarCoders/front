@@ -1,8 +1,6 @@
-import Link from "next/link";
-
 const SkPostPreview = () => {
   return (
-    <Link href="/posts/1">
+    <article>
       <div className="w-full p-4 text-left flex flex-col gap-3">
         {/* 프로필 */}
         <section className="flex justify-between items-center">
@@ -26,7 +24,7 @@ const SkPostPreview = () => {
           <div className="w-12 h-8 bg-gray-200 rounded-md animate-pulse" />
         </div>
       </div>
-    </Link>
+    </article>
   );
 };
 

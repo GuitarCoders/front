@@ -8,7 +8,6 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
-import { offsetLimitPagination } from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -29,17 +28,12 @@ const createAuthLink = (token?: string) => {
   });
 };
 
-// const cache = new InMemoryCache();
-type Args = {
-  offset: number;
-};
-
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
         getPosts: {
-          keyArgs: false,
+          keyArgs: ["userId"],
           merge(existing, incoming) {
             if (!existing) {
               return incoming;
@@ -48,6 +42,19 @@ const cache = new InMemoryCache({
               ...existing,
               ...incoming,
               posts: [...existing.posts, ...incoming.posts],
+            };
+          },
+        },
+        getCommentByPostId: {
+          keyArgs: ["postId"],
+          merge(existing, incoming) {
+            if (!existing) {
+              return incoming;
+            }
+            return {
+              ...existing,
+              ...incoming,
+              comments: [...existing.comments, ...incoming.comments],
             };
           },
         },

@@ -4,12 +4,14 @@ import UserTemplate from "@components/user-template";
 import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { USER_BY_ACCOUNT_ID } from "graphql/quries";
 import { UserByAccountIdResponse } from "graphql/quries.type";
+import useAlert from "hooks/useAlert";
 import type { User } from "hooks/useUser";
 import { GetServerSidePropsContext } from "next";
 import cookies from "next-cookies";
+import { useEffect } from "react";
 
 const GET_POSTS = gql`
-  query GetPosts($count: Int!, $filter: filter) {
+  query GetPosts($count: Int!, $filter: getPostFilter) {
     getPosts(getPostsData: { count: $count, filter: $filter }) {
       posts {
         _id
@@ -53,12 +55,21 @@ interface GetPostsResponse {
 }
 
 const Me = ({ user }: { user: User }) => {
-  const { data, loading, refetch } = useQuery<GetPostsResponse, GetPostsForm>(
-    GET_POSTS,
-    {
-      variables: { count: 20, filter: { userId: user._id } },
+  const alert = useAlert();
+  const { data, loading, refetch, error } = useQuery<
+    GetPostsResponse,
+    GetPostsForm
+  >(GET_POSTS, {
+    variables: { count: 20, filter: { userId: user?._id } },
+  });
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+      alert({ visible: true, title: error.name, description: error.message });
     }
-  );
+  }, [error, alert]);
+
   return (
     <Layout title="나는" showNewPostBtn>
       <UserTemplate profile={user} isMe data={data} dataLoading={loading} />
@@ -79,7 +90,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return addApolloState(apolloClient, {
       props: { user: userByAccountId },
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
     return {
       props: {},
     };

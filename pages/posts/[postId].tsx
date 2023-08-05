@@ -1,37 +1,192 @@
+import { gql, useMutation, useQuery } from "@apollo/client";
 import ChatInput from "@components/chat-input";
 import Comment from "@components/comment";
 import Layout from "@components/layout";
+import SkComment from "@components/skeletons/sk-comment";
+import { addApolloState, initializeApollo } from "@libs/apollo-client";
+import { GET_POST } from "graphql/quries";
+import { GetPostResponse } from "graphql/quries.type";
+import useAlert from "hooks/useAlert";
+import { User } from "hooks/useUser";
+import { GetServerSidePropsContext, NextPage } from "next";
+import cookies from "next-cookies";
+import { useRouter } from "next/router";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-const PostDetail = () => {
-  const profile = {
-    id: "my_nickname",
-    name: "닉네임",
+const GET_COMMENTS = gql`
+  query GetComments($postId: String!, $filter: commentFilter!) {
+    getCommentByPostId(postId: $postId, filter: $filter) {
+      comments {
+        _id
+        content
+        postId
+        Commenter {
+          _id
+          name
+        }
+        createdAt
+      }
+      hasNext
+    }
+  }
+`;
+
+const ADD_COMMENT = gql`
+  mutation AddCommentToPost($targetPostId: String!, $content: String!) {
+    addCommentToPost(targetPostId: $targetPostId, content: $content) {
+      _id
+      content
+      postId
+      Commenter {
+        _id
+        name
+      }
+      createdAt
+    }
+  }
+`;
+
+interface Filter {
+  skip?: number;
+  limit: number;
+}
+
+interface GetCommentsForm {
+  postId: string;
+  filter: Filter;
+}
+
+interface AddCommentForm {
+  targetPostId: string;
+  content: string;
+}
+
+interface AddCommentResponse {
+  addCommentToPost: {
+    _id: string;
+    content: string;
+    postId: string;
+    Commenter: User;
+    createdAt: string;
   };
+}
+
+interface GetCommentsResponse {
+  getCommentByPostId: {
+    comments: {
+      _id: string;
+      content: string;
+      postId: string;
+      Commenter: User;
+      createdAt: string;
+    }[];
+    hasNext: boolean;
+  };
+}
+
+interface PostDetailProps {
+  post: {
+    _id: string;
+    content: string;
+    tags: string;
+    category: string;
+    createdAt: string;
+    author: User;
+  };
+}
+
+const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
+  const limit = 10;
+  const [skip, setSkip] = useState(limit);
+  const router = useRouter();
+  const postId = String(router.query.postId);
+  const { register, handleSubmit, setValue } = useForm<{ comment: string }>();
+  const {
+    data: commentsData,
+    loading: commentsLoading,
+    error: commentsError,
+    fetchMore: fetchMoreComments,
+    client,
+  } = useQuery<GetCommentsResponse, GetCommentsForm>(GET_COMMENTS, {
+    variables: {
+      postId,
+      filter: { skip: 0, limit },
+    },
+  });
+
+  const [addComment, { loading: addCommentLoading }] = useMutation<
+    AddCommentResponse,
+    AddCommentForm
+  >(ADD_COMMENT);
+
+  const alert = useAlert();
+  const onValid = async (formData: { comment: string }) => {
+    if (addCommentLoading) {
+      return;
+    }
+    try {
+      const result = await addComment({
+        variables: { content: formData.comment, targetPostId: postId },
+      });
+      if (result) {
+        setValue("comment", "");
+        const data = client.readQuery({ query: GET_COMMENTS });
+        client.writeQuery({
+          query: GET_COMMENTS,
+          data: {
+            getCommentByPostId: {
+              ...data.getCommentByPostId,
+              comments: [result.data?.addCommentToPost],
+            },
+          },
+        });
+      }
+    } catch (error) {
+      console.error(commentsError);
+      if (commentsError) {
+        alert({
+          visible: true,
+          title: commentsError?.name,
+          description: commentsError.message,
+        });
+      } else {
+        alert({
+          visible: true,
+          title: "오류 발생",
+          description: JSON.stringify(error),
+        });
+      }
+    }
+  };
+
+  function fetchNext() {
+    setSkip((prev) => prev + limit);
+    fetchMoreComments({
+      variables: {
+        filter: { skip, limit },
+      },
+    });
+  }
+
   return (
-    <Layout canGoBack profile={profile}>
+    <Layout canGoBack profile={post.author}>
       <section className="divide-y pb-16">
         {/* 본문 */}
         <div className="flex flex-col p-4 gap-2 text-sm shadow-md">
-          <h5 className="">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            omnis culpa eos minus voluptatem, tempora beatae nemo, ab
-            consequatur rem neque quidem recusandae cum sit eligendi voluptate
-            praesentium? Dicta tempora sunt minus sit natus! Eveniet maiores
-            debitis eaque doloremque eius.
-          </h5>
-          <p className="text-gray-600 font-light">
-            Lorem ipsum dolor sit amet.
-          </p>
+          <h5>{post.content}</h5>
+          <p className="text-gray-600 font-light">{post.tags}</p>
           <div className="flex justify-between pt-6 items-center">
             <div>
               <p className="text-xs text-gray-600 font-light">
-                {new Date().toLocaleString("ko", {
+                {new Date(post.createdAt).toLocaleString("ko", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  second: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
                 })}
               </p>
             </div>
@@ -51,7 +206,7 @@ const PostDetail = () => {
                     d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
                   />
                 </svg>
-                <p>3</p>
+                <p>0</p>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -66,7 +221,7 @@ const PostDetail = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <p>3</p>
+                <p>{commentsData?.getCommentByPostId.comments.length}</p>
               </div>
             </div>
           </div>
@@ -96,28 +251,59 @@ const PostDetail = () => {
           </div>
 
           {/* 댓글 */}
-          <div>
-            <Comment
-              username="냠냠"
-              comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
-                  beatae quos vero itaque enim dolores cupiditate et expedita
-                  hic, quaerat dolore ea. Tempora ducimus provident iure
-                  explicabo cumque ea iste, aliquid facilis ullam ipsam odio,
-                  nam, ad inventore. Sit, veniam cumque est veritatis quis,
-                  commodi recusandae iure nobis nostrum, fuga laborum odio modi
-                  eum expedita doloribus culpa. Velit, enim cum."
-            />
-            <Comment
-              username="프로필네임"
-              comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit fuga cumque pariatur eos, aliquam quidem sit omnis earum suscipit ipsum."
-            />
-          </div>
+          {commentsLoading ? (
+            Array.from({ length: 10 }, (_, i) => <SkComment key={i} />)
+          ) : (
+            <InfiniteScroll
+              dataLength={
+                commentsData?.getCommentByPostId.comments.length ?? limit
+              }
+              next={fetchNext}
+              hasMore={commentsData?.getCommentByPostId.hasNext!}
+              loader={<SkComment />}
+            >
+              {commentsData?.getCommentByPostId.comments.map((comment) => (
+                <Comment
+                  username={comment.Commenter.name}
+                  comment={comment.content}
+                  key={comment._id}
+                />
+              ))}
+            </InfiniteScroll>
+          )}
         </div>
       </section>
 
-      <ChatInput placeholder="댓글 입력.." />
+      <form onSubmit={handleSubmit(onValid)}>
+        <ChatInput
+          placeholder="댓글 입력.."
+          register={register("comment", { required: true })}
+        />
+      </form>
     </Layout>
   );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const { accessToken } = cookies(ctx);
+  const apolloClient = initializeApollo(null, accessToken);
+  const postId = ctx.params?.postId;
+  try {
+    const {
+      data: { getPost },
+    } = await apolloClient.query<GetPostResponse>({
+      query: GET_POST,
+      variables: { postId },
+    });
+    return addApolloState(apolloClient, {
+      props: { post: getPost },
+    });
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {},
+    };
+  }
+}
 
 export default PostDetail;

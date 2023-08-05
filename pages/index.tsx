@@ -1,54 +1,14 @@
 import Layout from "@components/layout";
 import PostPreview from "@components/post-preview";
-import { gql, useQuery } from "@apollo/client";
-import { User } from "hooks/useUser";
+import { useQuery } from "@apollo/client";
 import SkPostPreview from "@components/skeletons/sk-post-preview";
 import EmptyStateFooter from "@components/empty-state-has-footer";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-const GET_POSTS = gql`
-  query GetPosts($count: Int!, $filter: filter) {
-    getPosts(getPostsData: { count: $count, filter: $filter }) {
-      posts {
-        _id
-        author {
-          _id
-          name
-        }
-        content
-        tags
-        category
-        createdAt
-      }
-      lastDateTime
-    }
-  }
-`;
-
-interface Filter {
-  userId?: string;
-  category?: string;
-  before?: string;
-}
-
-interface GetPostsForm {
-  count: number;
-  filter?: Filter;
-}
-
-interface GetPostsResponse {
-  getPosts: {
-    posts: {
-      _id: string;
-      author: User;
-      content: string;
-      tags: string;
-      category: string;
-      createdAt: string;
-    }[];
-    lastDateTime: string;
-  };
-}
+import { useEffect, useState } from "react";
+import useAlert from "hooks/useAlert";
+import { AnimatePresence, motion } from "framer-motion";
+import { GetPostsForm, GetPostsResponse } from "graphql/quries.type";
+import { GET_POSTS } from "graphql/quries";
 
 export default function Timeline() {
   function fetchNext() {
@@ -59,32 +19,78 @@ export default function Timeline() {
     });
   }
 
-  const { data, loading, fetchMore, refetch } = useQuery<
+  const alert = useAlert();
+  const [showBtn, setShowBtn] = useState(false);
+  const { data, loading, fetchMore, refetch, error } = useQuery<
     GetPostsResponse,
     GetPostsForm
   >(GET_POSTS, {
     variables: { count: 5, filter: undefined },
   });
 
+  function onRefetchClick() {
+    refetch();
+    scrollTo(0, 0);
+    setShowBtn(false);
+  }
+
+  useEffect(() => {
+    function toggleBtn() {
+      setShowBtn(true);
+    }
+    const timer = setTimeout(toggleBtn, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [showBtn]);
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+      alert({ visible: true, title: error.name, description: error.message });
+    }
+  }, [error, alert]);
+
   return (
     <Layout title="모아보는" showNewPostBtn>
-      <button
-        onClick={() => refetch()}
-        className="border flex mx-auto p-2 rounded-lg text-gray-400"
-      >
-        ⬆ 임시 새 글 불러오기 버튼 ⬆
-      </button>
+      <AnimatePresence>
+        {showBtn ? (
+          <motion.button
+            initial={{ y: -200 }}
+            animate={{ y: 0 }}
+            exit={{ y: -200 }}
+            onClick={onRefetchClick}
+            className="flex justify-center items-center mx-auto fixed top-20 left-0 right-0 w-12 h-12 rounded-full text-sm text-white bg-violet-400 shadow-lg"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+              />
+            </svg>
+          </motion.button>
+        ) : null}
+      </AnimatePresence>
       {!loading ? (
         <InfiniteScroll
           dataLength={data?.getPosts.posts.length ?? 20}
           next={fetchNext}
           loader={<SkPostPreview />}
-          hasMore={true}
+          hasMore={data?.getPosts.hasNext!}
         >
           <section>
             {data?.getPosts.posts?.map((post) => (
               <PostPreview
                 key={post._id}
+                postId={post._id}
                 author={post.author}
                 content={post.content}
                 tags={post.tags}

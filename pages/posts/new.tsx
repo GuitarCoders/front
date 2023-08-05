@@ -1,47 +1,27 @@
-import { gql, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import Layout from "@components/layout";
 import SubmitButton from "@components/submit-button";
 import TextInput from "@components/text-input";
 import Textarea from "@components/textarea";
+import { CREATE_POST } from "graphql/mutations";
+import { CreatePostForm } from "graphql/mutations.type";
+import { GET_POSTS } from "graphql/quries";
+import { GetPostResponse } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
 import { User } from "hooks/useUser";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-const CREATE_POST = gql`
-  mutation CreatePost($content: String!, $tags: String!, $category: String!) {
-    createPost(
-      createPostData: { content: $content, tags: $tags, category: $category }
-    ) {
-      success
-    }
-  }
-`;
-
-interface PostResponse {
-  createPost: {
-    _id: string;
-    author: User;
-    content: string;
-    tags: string;
-    category: string;
-    createdAt: string;
-    success: boolean;
-  };
-}
-
-interface PostForm {
-  content: string;
-  tags: string;
-  category: string;
-}
-
 const NewPost = () => {
   const alert = useAlert();
   const router = useRouter();
-  const [post, { loading }] = useMutation<PostResponse, PostForm>(CREATE_POST);
-  const { register, handleSubmit } = useForm<PostForm>();
-  const onValid = async (form: PostForm) => {
+  const client = useApolloClient();
+  const [post, { loading }] = useMutation<GetPostResponse, CreatePostForm>(
+    CREATE_POST
+  );
+  const { register, handleSubmit } = useForm<CreatePostForm>();
+
+  const onValid = async (form: CreatePostForm) => {
     if (loading) return;
     const variables = { ...form, category: "" };
     try {
@@ -49,6 +29,7 @@ const NewPost = () => {
       if (result.errors) {
         showError();
       } else {
+        await client.refetchQueries({ include: [GET_POSTS] });
         router.back();
       }
     } catch {
