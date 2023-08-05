@@ -29,3 +29,23 @@ export const GET_POST = gql`
     }
   }
 `;
+
+export const GET_POSTS = gql`
+  query GetPosts($count: Int!, $filter: getPostFilter) {
+    getPosts(getPostsData: { count: $count, filter: $filter }) {
+      posts {
+        _id
+        author {
+          _id
+          name
+        }
+        content
+        tags
+        category
+        createdAt
+      }
+      lastDateTime
+      hasNext
+    }
+  }
+`;
