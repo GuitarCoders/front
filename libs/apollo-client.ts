@@ -33,7 +33,7 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         getPosts: {
-          keyArgs: ["userId"],
+          keyArgs: ["targetUserId"],
           merge(existing, incoming) {
             if (!existing) {
               return incoming;
