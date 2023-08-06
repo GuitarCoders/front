@@ -18,7 +18,6 @@ export interface GetPostResponse {
 }
 
 interface GetPostsFilter {
-  userId?: string;
   category?: string;
   before?: string;
 }
@@ -26,6 +25,7 @@ interface GetPostsFilter {
 export interface GetPostsForm {
   count: number;
   filter?: GetPostsFilter;
+  targetUserId?: string;
 }
 
 export interface GetPostsResponse {
