@@ -25,7 +25,7 @@ export default function Timeline() {
     GetPostsResponse,
     GetPostsForm
   >(GET_POSTS, {
-    variables: { count: 5, filter: undefined },
+    variables: { count: 5, filter: undefined, targetUserId: undefined },
   });
 
   function onRefetchClick() {

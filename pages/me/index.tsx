@@ -1,66 +1,34 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Layout from "@components/layout";
 import UserTemplate from "@components/user-template";
 import { addApolloState, initializeApollo } from "@libs/apollo-client";
-import { USER_BY_ACCOUNT_ID } from "graphql/quries";
-import { UserByAccountIdResponse } from "graphql/quries.type";
+import { GET_POSTS, USER_BY_ACCOUNT_ID } from "graphql/quries";
+import {
+  GetPostsForm,
+  GetPostsResponse,
+  UserByAccountIdResponse,
+} from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
 import type { User } from "hooks/useUser";
 import { GetServerSidePropsContext } from "next";
 import cookies from "next-cookies";
 import { useEffect } from "react";
 
-const GET_POSTS = gql`
-  query GetPosts($count: Int!, $filter: getPostFilter) {
-    getPosts(getPostsData: { count: $count, filter: $filter }) {
-      posts {
-        _id
-        author {
-          _id
-          name
-        }
-        content
-        tags
-        category
-        createdAt
-      }
-      lastDateTime
-    }
-  }
-`;
-
-interface Filter {
-  userId?: string;
-  category?: string;
-  before?: string;
-}
-
-interface GetPostsForm {
-  count: number;
-  filter?: Filter;
-}
-
-interface GetPostsResponse {
-  getPosts: {
-    posts: {
-      _id: string;
-      author: User;
-      content: string;
-      tags: string;
-      category: string;
-      createdAt: string;
-    }[];
-    lastDateTime: string;
-  };
-}
-
 const Me = ({ user }: { user: User }) => {
+  function fetchNext() {
+    fetchMore({
+      variables: {
+        filter: { before: data?.getPosts.lastDateTime },
+      },
+    });
+  }
+
   const alert = useAlert();
-  const { data, loading, refetch, error } = useQuery<
+  const { data, loading, error, fetchMore } = useQuery<
     GetPostsResponse,
     GetPostsForm
   >(GET_POSTS, {
-    variables: { count: 20, filter: { userId: user?._id } },
+    variables: { count: 20, targetUserId: user?._id },
   });
 
   useEffect(() => {

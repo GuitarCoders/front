@@ -31,8 +31,11 @@ export const GET_POST = gql`
 `;
 
 export const GET_POSTS = gql`
-  query GetPosts($count: Int!, $filter: getPostFilter) {
-    getPosts(getPostsData: { count: $count, filter: $filter }) {
+  query GetPosts($count: Int!, $filter: getPostFilter, $targetUserId: String) {
+    getPosts(
+      getPostsData: { count: $count, filter: $filter }
+      targetUserId: $targetUserId
+    ) {
       posts {
         _id
         author {
