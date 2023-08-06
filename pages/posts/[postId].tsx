@@ -11,7 +11,7 @@ import { User } from "hooks/useUser";
 import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -106,7 +106,6 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
   const {
     data: commentsData,
     loading: commentsLoading,
-    error: commentsError,
     fetchMore: fetchMoreComments,
     client,
   } = useQuery<GetCommentsResponse, GetCommentsForm>(GET_COMMENTS, {
@@ -132,9 +131,14 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
       });
       if (result) {
         setValue("comment", "");
-        const data = client.readQuery({ query: GET_COMMENTS });
+        const data = await client.readQuery({
+          query: GET_COMMENTS,
+          variables: { postId },
+        });
+        console.log(data);
         client.writeQuery({
           query: GET_COMMENTS,
+          variables: { postId },
           data: {
             getCommentByPostId: {
               ...data.getCommentByPostId,
@@ -143,13 +147,13 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
           },
         });
       }
-    } catch (error) {
-      console.error(commentsError);
-      if (commentsError) {
+    } catch (error: any) {
+      console.error(error);
+      if (error) {
         alert({
           visible: true,
-          title: commentsError?.name,
-          description: commentsError.message,
+          title: error?.name,
+          description: error.message,
         });
       } else {
         alert({
