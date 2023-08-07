@@ -6,15 +6,18 @@ export interface UserByAccountIdResponse {
   } & User;
 }
 
+export interface Post {
+  _id: string;
+  content: string;
+  tags: string;
+  category: string;
+  createdAt: string;
+  author: User;
+  commentsCount: number;
+}
+
 export interface GetPostResponse {
-  getPost: {
-    _id: string;
-    content: string;
-    tags: string;
-    category: string;
-    createdAt: string;
-    author: User;
-  };
+  getPost: Post;
 }
 
 interface GetPostsFilter {
@@ -30,14 +33,7 @@ export interface GetPostsForm {
 
 export interface GetPostsResponse {
   getPosts: {
-    posts: {
-      _id: string;
-      author: User;
-      content: string;
-      tags: string;
-      category: string;
-      createdAt: string;
-    }[];
+    posts: Post[];
     lastDateTime: string;
     hasNext: boolean;
   };
