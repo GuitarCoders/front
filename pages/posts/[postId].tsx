@@ -5,7 +5,7 @@ import Layout from "@components/layout";
 import SkComment from "@components/skeletons/sk-comment";
 import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { GET_POST } from "graphql/quries";
-import { GetPostResponse } from "graphql/quries.type";
+import { GetPostResponse, Post } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
 import { User } from "hooks/useUser";
 import { GetServerSidePropsContext, NextPage } from "next";
@@ -87,14 +87,7 @@ interface GetCommentsResponse {
 }
 
 interface PostDetailProps {
-  post: {
-    _id: string;
-    content: string;
-    tags: string;
-    category: string;
-    createdAt: string;
-    author: User;
-  };
+  post: Post;
 }
 
 const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
@@ -225,7 +218,7 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <p>{commentsData?.getCommentByPostId.comments.length}</p>
+                <p>{post.commentsCount}</p>
               </div>
             </div>
           </div>
@@ -256,7 +249,7 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
 
           {/* 댓글 */}
           {commentsLoading ? (
-            Array.from({ length: 10 }, (_, i) => <SkComment key={i} />)
+            Array.from({ length: 5 }, (_, i) => <SkComment key={i} />)
           ) : (
             <InfiniteScroll
               dataLength={

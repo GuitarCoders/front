@@ -95,6 +95,7 @@ export default function Timeline() {
                 content={post.content}
                 tags={post.tags}
                 createdAt={post.createdAt}
+                commentsCount={post.commentsCount}
               />
             ))}
           </section>

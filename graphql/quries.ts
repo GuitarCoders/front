@@ -26,6 +26,7 @@ export const GET_POST = gql`
       tags
       category
       createdAt
+      commentsCount
     }
   }
 `;
@@ -46,6 +47,7 @@ export const GET_POSTS = gql`
         tags
         category
         createdAt
+        commentsCount
       }
       lastDateTime
       hasNext
