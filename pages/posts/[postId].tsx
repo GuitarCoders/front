@@ -25,6 +25,7 @@ const GET_COMMENTS = gql`
         Commenter {
           _id
           name
+          account_id
         }
         createdAt
       }
@@ -261,9 +262,10 @@ const PostDetail: NextPage<PostDetailProps> = ({ post }) => {
             >
               {commentsData?.getCommentByPostId.comments.map((comment) => (
                 <Comment
-                  username={comment.Commenter.name}
-                  comment={comment.content}
                   key={comment._id}
+                  comment={comment.content}
+                  username={comment.Commenter.name}
+                  accountId={comment.Commenter.account_id}
                 />
               ))}
             </InfiniteScroll>

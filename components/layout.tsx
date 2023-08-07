@@ -56,13 +56,16 @@ const Layout: NextPage<LayoutProps> = ({
               <h1 className="text-lg font-bold text-violet-600">{title}</h1>
             ) : null}
             {profile ? (
-              <div className="flex items-center gap-3">
+              <Link
+                href={`/users/${profile.account_id}`}
+                className="flex items-center gap-3"
+              >
                 <div className="w-10 h-10 bg-gray-300 rounded-md" />
                 <div className="flex flex-col items-start">
                   <h3 className="font-semibold text-sm">{profile.name}</h3>
                   <p className="text-gray-400 text-xs">@{profile.account_id}</p>
                 </div>
-              </div>
+              </Link>
             ) : null}
           </section>
           <section className="flex items-center gap-5">
