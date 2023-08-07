@@ -4,17 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { User, UserState } from "hooks/useUser";
 import SkPostPreview from "./skeletons/sk-post-preview";
+import { Post } from "graphql/quries.type";
 
 interface GetPostsResponse {
   getPosts: {
-    posts: {
-      _id: string;
-      author: User;
-      content: string;
-      tags: string;
-      category: string;
-      createdAt: string;
-    }[];
+    posts: Post[];
     lastDateTime: string;
   };
 }
@@ -148,6 +142,7 @@ const UserTemplate: NextPage<UserTemplateProps> = ({
                   content={post.content}
                   createdAt={post.createdAt}
                   tags={post.tags}
+                  commentsCount={post.commentsCount}
                 />
               ))
             : Array.from({ length: 3 }, (_, i) => i).map((i) => (
