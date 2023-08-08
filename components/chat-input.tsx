@@ -17,7 +17,6 @@ const ChatInput: NextPage<ChatInputProps> = ({ placeholder, register }) => {
           autoCapitalize="none"
           autoCorrect="off"
           autoSave="off"
-          autoFocus
           {...register}
         />
         <button className="absolute right-2 top-[5px] text-md py-1 px-4 bg-violet-400 rounded-3xl text-white">
