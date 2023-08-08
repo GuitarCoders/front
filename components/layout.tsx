@@ -1,10 +1,11 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactNode, ReactSVGElement, SVGProps } from "react";
 import { cls } from "@libs/cls";
 import FooterItem from "@components/footer-item";
 import Link from "next/link";
 import Head from "next/head";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { User } from "graphql/quries.type";
 
 interface LayoutProps {
@@ -14,7 +15,14 @@ interface LayoutProps {
   children: ReactNode | ReactNode[];
   showNewPostBtn?: boolean;
   showNewChatBtn?: boolean;
+  moreBtns?: MoreBtns;
 }
+
+export type MoreBtns = {
+  action: (event: Event) => void;
+  name: string;
+  icon: JSX.Element;
+}[];
 
 const Layout: NextPage<LayoutProps> = ({
   title,
@@ -23,6 +31,7 @@ const Layout: NextPage<LayoutProps> = ({
   children,
   showNewPostBtn,
   showNewChatBtn,
+  moreBtns,
 }) => {
   const { back } = useRouter();
 
@@ -99,6 +108,43 @@ const Layout: NextPage<LayoutProps> = ({
                   <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
                 </svg>
               </Link>
+            ) : null}
+            {moreBtns ? (
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                    />
+                  </svg>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    align="end"
+                    className="z-20 min-w-[180px] bg-white rounded-md p-2 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
+                  >
+                    {moreBtns.map((button, index) => (
+                      <DropdownMenu.Item
+                        key={index}
+                        className="group leading-none rounded-md flex items-center h-8 p-3 relative select-none outline-none data-[disabled]:pointer-events-none hover:bg-gray-200 cursor-pointer"
+                        onSelect={button.action}
+                      >
+                        <div className="pr-2">{button.icon}</div>
+                        <p className="text-sm">{button.name}</p>
+                      </DropdownMenu.Item>
+                    ))}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
             ) : null}
           </section>
         </header>
