@@ -32,7 +32,7 @@ const Layout: NextPage<LayoutProps> = ({
         <title>{title ? `${title} | 나도하루` : "나도하루"}</title>
       </Head>
       <main className="max-w-2xl mx-auto">
-        <header className="px-4 h-14 border-b-2 border-violet-600 text-center fixed flex justify-between top-0 max-w-2xl w-full bg-white z-10 shadow-md">
+        <header className="px-4 h-14 border-b-2 border-violet-600 text-center fixed flex justify-between top-0 max-w-2xl w-full bg-white z-20 shadow-md">
           <section className="flex items-center gap-4">
             {canGoBack ? (
               <button className="text-2xl" onClick={back}>
@@ -106,7 +106,7 @@ const Layout: NextPage<LayoutProps> = ({
           {children}
         </section>
         {canGoBack ? null : (
-          <footer className="max-w-2xl w-full grid grid-cols-4 mx-auto h-20 bg-violet-600 fixed bottom-0 border-t-2 border-violet-800">
+          <footer className="max-w-2xl w-full grid grid-cols-4 mx-auto h-20 bg-violet-600 fixed bottom-0 border-t-2 border-violet-800 z-20">
             <FooterItem title="모아보는" link="/" />
             <FooterItem title="메시지" link="/chat" />
             <FooterItem title="나는" link="/me" />
