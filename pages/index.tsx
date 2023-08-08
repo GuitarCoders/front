@@ -60,7 +60,7 @@ export default function Timeline() {
             animate={{ y: 0 }}
             exit={{ y: -200 }}
             onClick={onRefetchClick}
-            className="flex justify-center items-center mx-auto fixed top-20 left-0 right-0 w-12 h-12 rounded-full text-sm text-white bg-violet-400 shadow-lg"
+            className="flex justify-center items-center mx-auto fixed top-20 left-0 right-0 w-12 h-12 rounded-full text-sm text-white bg-violet-400 shadow-lg z-10"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
