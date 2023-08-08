@@ -1,17 +1,8 @@
 import { ApolloError, useLazyQuery } from "@apollo/client";
 import { useCallback, useEffect, useState } from "react";
 import useAlert from "./useAlert";
-import { UserByAccountIdResponse } from "graphql/quries.type";
+import { User, UserByAccountIdResponse } from "graphql/quries.type";
 import { USER_BY_ACCOUNT_ID } from "graphql/quries";
-
-export interface User {
-  _id: string;
-  name: string;
-  email: string;
-  account_id: string;
-  about_me: string;
-  friends: string[];
-}
 
 export type UserState = User | null | undefined;
 type UseUserReturn = [UserState, { loading: boolean; error?: ApolloError }];

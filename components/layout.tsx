@@ -5,7 +5,7 @@ import { cls } from "@libs/cls";
 import FooterItem from "@components/footer-item";
 import Link from "next/link";
 import Head from "next/head";
-import { User } from "hooks/useUser";
+import { User } from "graphql/quries.type";
 
 interface LayoutProps {
   title?: string;

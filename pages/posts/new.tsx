@@ -8,7 +8,6 @@ import { CreatePostForm } from "graphql/mutations.type";
 import { GET_POSTS } from "graphql/quries";
 import { GetPostResponse } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
-import { User } from "hooks/useUser";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 

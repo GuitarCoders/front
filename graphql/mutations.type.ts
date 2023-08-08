@@ -1,4 +1,4 @@
-import { User } from "hooks/useUser";
+import { User } from "./quries.type";
 
 export interface CreatePostResponse {
   createPost: {

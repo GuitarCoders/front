@@ -1,5 +1,5 @@
 import { timeDifference } from "@libs/time-difference";
-import { User } from "hooks/useUser";
+import { User } from "graphql/quries.type";
 import { NextPage } from "next";
 import Link from "next/link";
 

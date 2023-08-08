@@ -4,7 +4,7 @@ import FriendRequested from "@components/friend-requested";
 import Layout from "@components/layout";
 import PullToRefresh from "@components/pull-to-refresh";
 import SkFriendRequested from "@components/skeletons/sk-friend-requested";
-import { User } from "hooks/useUser";
+import { User } from "graphql/quries.type";
 
 const GET_SENT_FRIEND_REQUESTS = gql`
   query getSentFriendRequests {

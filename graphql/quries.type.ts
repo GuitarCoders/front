@@ -1,4 +1,11 @@
-import { User } from "hooks/useUser";
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  account_id: string;
+  about_me: string;
+  friends: string[];
+}
 
 export interface UserByAccountIdResponse {
   userByAccountId: {
