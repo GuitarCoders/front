@@ -6,10 +6,10 @@ import { GET_POSTS, USER_BY_ACCOUNT_ID } from "graphql/quries";
 import {
   GetPostsForm,
   GetPostsResponse,
+  User,
   UserByAccountIdResponse,
 } from "graphql/quries.type";
 import useAlert from "hooks/useAlert";
-import type { User } from "hooks/useUser";
 import { GetServerSidePropsContext } from "next";
 import cookies from "next-cookies";
 import { useEffect } from "react";
