@@ -5,11 +5,11 @@ import { GET_POSTS, USER_BY_ACCOUNT_ID } from "graphql/quries";
 import {
   GetPostsForm,
   GetPostsResponse,
+  User,
   UserByAccountIdResponse,
 } from "graphql/quries.type";
 import { GetServerSidePropsContext, NextPage } from "next";
 import cookies from "next-cookies";
-import type { User } from "hooks/useUser";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useQuery } from "@apollo/client";

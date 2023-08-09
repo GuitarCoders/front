@@ -2,9 +2,8 @@ import { NextPage } from "next";
 import PostPreview from "./post-preview";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { User, UserState } from "hooks/useUser";
 import SkPostPreview from "./skeletons/sk-post-preview";
-import { Post } from "graphql/quries.type";
+import { Post, User } from "graphql/quries.type";
 
 interface GetPostsResponse {
   getPosts: {
@@ -16,7 +15,7 @@ interface GetPostsResponse {
 interface UserTemplateProps {
   isMe?: boolean;
   isFriend?: boolean;
-  profile: UserState;
+  profile: User;
   loading?: boolean;
   data?: GetPostsResponse;
   dataLoading: boolean;
