@@ -27,7 +27,7 @@ const UserPage: NextPage<UserPageProps> = ({ isMe, profile }) => {
     }
   }, [profile, router]);
 
-  const { data, loading, refetch } = useQuery<GetPostsResponse, GetPostsForm>(
+  const { data, loading } = useQuery<GetPostsResponse, GetPostsForm>(
     GET_POSTS,
     {
       variables: { count: 20, targetUserId: profile?._id },
