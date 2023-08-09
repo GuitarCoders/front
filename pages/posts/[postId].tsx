@@ -2,6 +2,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import ChatInput from "@components/chat-input";
 import Comment from "@components/comment";
 import Layout, { MoreBtns } from "@components/layout";
+import PostNotFound from "@components/not-found/post-not-found";
 import SkComment from "@components/skeletons/sk-comment";
 import { addApolloState, initializeApollo } from "@libs/apollo-client";
 import { GET_POST, GET_POSTS } from "graphql/quries";
@@ -197,7 +198,16 @@ const PostDetail: NextPage<PostDetailProps> = ({ post, isUserPost }) => {
           action: () => {
             removePost()
               .then(() => router.back())
-              .then(() => client.refetchQueries({ include: [GET_POSTS] }));
+              .then(() => {
+                client.refetchQueries({ include: [GET_POSTS] });
+                client.writeQuery({
+                  query: GET_POST,
+                  variables: { postId },
+                  data: {
+                    getPost: undefined,
+                  },
+                });
+              });
             // alert({
             //   visible: true,
             //   title: "글 삭제하기",
@@ -247,6 +257,9 @@ const PostDetail: NextPage<PostDetailProps> = ({ post, isUserPost }) => {
         },
   ];
 
+  if (!post) {
+    return <PostNotFound />;
+  }
   return (
     <Layout canGoBack profile={post.author} moreBtns={moreBtns}>
       <section className="divide-y pb-16">
@@ -366,12 +379,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { accountId, accessToken } = cookies(ctx);
   const apolloClient = initializeApollo(null, accessToken);
   const postId = ctx.params?.postId;
+
   try {
     const {
       data: { getPost },
     } = await apolloClient.query<GetPostResponse>({
       query: GET_POST,
       variables: { postId },
+      fetchPolicy: "no-cache",
     });
     return addApolloState(apolloClient, {
       props: {
